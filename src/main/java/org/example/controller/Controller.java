@@ -7,10 +7,15 @@ import org.example.model.stmt.IStmt;
 import org.example.repository.IRepository;
 
 public class Controller {
-    private IRepository repo;
+    private final IRepository repo;
+    private boolean displayFlag = false;
 
     public Controller(IRepository repo) {
         this.repo = repo;
+    }
+
+    public void setDisplayFlag(boolean value) {
+        this.displayFlag = value;
     }
 
     public PrgState oneStep(PrgState state) throws MyException {
@@ -23,11 +28,19 @@ public class Controller {
     }
 
     public void allStep() {
-        PrgState prg = repo.getCrtPrg(); // repo is the controller field of type MyRepoInterface
-        System.out.println(prg);
-        while (!prg.getStk().isEmpty()) {
-            oneStep(prg);
-            System.out.println(prg);
+        PrgState prg = repo.getCrtPrg();
+        if (displayFlag) {
+            System.out.println(prg.toString());
+        }
+        try {
+            while (!prg.getStk().isEmpty()) {
+                oneStep(prg);
+                if (displayFlag) {
+                    System.out.println(prg.toString());
+                }
+            }
+        } catch (MyException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

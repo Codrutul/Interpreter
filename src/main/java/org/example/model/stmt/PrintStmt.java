@@ -24,4 +24,9 @@ public class PrintStmt implements IStmt {
         out.add(exp.eval(state.getSymTable()));
         return state;
     }
+
+    @Override
+    public IStmt deepCopy() {
+        return new PrintStmt(exp.deepCopy());
+    }
 }

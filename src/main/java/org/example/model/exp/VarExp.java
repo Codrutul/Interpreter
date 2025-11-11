@@ -20,4 +20,9 @@ public class VarExp implements Exp {
     public String toString() {
         return id;
     }
+
+    @Override
+    public Exp deepCopy() {
+        return new VarExp(id);
+    }
 }

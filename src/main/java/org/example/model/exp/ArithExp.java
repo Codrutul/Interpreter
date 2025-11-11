@@ -57,4 +57,14 @@ public class ArithExp implements Exp {
         if (op == 4) opString = "/";
         return e1.toString() + " " + opString + " " + e2.toString();
     }
+
+    @Override
+    public Exp deepCopy() {
+        char opChar = ' ';
+        if (op == 1) opChar = '+';
+        if (op == 2) opChar = '-';
+        if (op == 3) opChar = '*';
+        if (op == 4) opChar = '/';
+        return new ArithExp(opChar, e1.deepCopy(), e2.deepCopy());
+    }
 }

@@ -20,4 +20,9 @@ public class ValueExp implements Exp {
     public String toString() {
         return e.toString();
     }
+
+    @Override
+    public Exp deepCopy() {
+        return new ValueExp(e.deepCopy());
+    }
 }

@@ -48,4 +48,12 @@ public class LogicExp implements Exp {
         if (op == 2) opString = "or";
         return e1.toString() + " " + opString + " " + e2.toString();
     }
+
+    @Override
+    public Exp deepCopy() {
+        String opString = "";
+        if (op == 1) opString = "and";
+        if (op == 2) opString = "or";
+        return new LogicExp(opString, e1.deepCopy(), e2.deepCopy());
+    }
 }

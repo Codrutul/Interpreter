@@ -26,9 +26,9 @@ public class VarDeclStmt implements IStmt {
             throw new MyException("variable is already declared");
         } else {
             if (typ.equals(new IntType())) {
-                symTbl.add(name, new IntValue(0));
+                symTbl.add(name, new IntType().defaultValue());
             } else {
-                symTbl.add(name, new BoolValue(false));
+                symTbl.add(name, new BoolType().defaultValue());
             }
         }
         return state;
@@ -37,5 +37,10 @@ public class VarDeclStmt implements IStmt {
     @Override
     public String toString() {
         return typ.toString() + " " + name;
+    }
+
+    @Override
+    public IStmt deepCopy() {
+        return new VarDeclStmt(name, typ.deepCopy());
     }
 }
