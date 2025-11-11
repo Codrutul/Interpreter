@@ -11,13 +11,10 @@ public class ArithExp implements Exp {
     private final Exp e2;
     private final int op; //1-plus, 2-minus, 3-star, 4-divide
 
-    public ArithExp(char op, Exp e1, Exp e2) {
+    public ArithExp(int op, Exp e1, Exp e2) {
         this.e1 = e1;
         this.e2 = e2;
-        if (op == '+') this.op = 1;
-        else if (op == '-') this.op = 2;
-        else if (op == '*') this.op = 3;
-        else this.op = 4;
+        this.op = op;
     }
 
     @Override
@@ -56,5 +53,10 @@ public class ArithExp implements Exp {
         if (op == 3) opString = "*";
         if (op == 4) opString = "/";
         return e1.toString() + " " + opString + " " + e2.toString();
+    }
+
+    @Override
+    public Exp deepCopy() {
+        return new ArithExp(op, e1.deepCopy(), e2.deepCopy());
     }
 }

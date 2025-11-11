@@ -9,4 +9,6 @@ public interface MyIStack<T> {
     void push(T v);
     boolean isEmpty();
     List<T> getReversed();
+    String toFileString();
+    MyIStack<T> deepCopy() throws MyException;
 }

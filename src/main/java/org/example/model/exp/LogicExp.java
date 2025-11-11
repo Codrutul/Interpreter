@@ -11,11 +11,10 @@ public class LogicExp implements Exp {
     private final Exp e2;
     private final int op; //1-and, 2-or
 
-    public LogicExp(String op, Exp e1, Exp e2) {
+    public LogicExp(int op, Exp e1, Exp e2) {
         this.e1 = e1;
         this.e2 = e2;
-        if (op.equals("and")) this.op = 1;
-        else this.op = 2;
+        this.op = op;
     }
 
     @Override
@@ -47,5 +46,10 @@ public class LogicExp implements Exp {
         if (op == 1) opString = "and";
         if (op == 2) opString = "or";
         return e1.toString() + " " + opString + " " + e2.toString();
+    }
+
+    @Override
+    public Exp deepCopy() {
+        return new LogicExp(op, e1.deepCopy(), e2.deepCopy());
     }
 }

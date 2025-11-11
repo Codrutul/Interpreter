@@ -23,4 +23,11 @@ public class IntValue implements Value {
     public Type getType() {
         return new IntType();
     }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another instanceof IntValue)
+            return ((IntValue) another).getVal() == val;
+        return false;
+    }
 }

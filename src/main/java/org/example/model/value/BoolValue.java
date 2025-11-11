@@ -23,4 +23,11 @@ public class BoolValue implements Value {
     public Type getType() {
         return new BoolType();
     }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another instanceof BoolValue)
+            return ((BoolValue) another).getVal() == val;
+        return false;
+    }
 }

@@ -43,4 +43,22 @@ public class MyStack<T> implements MyIStack<T> {
     public String toString() {
         return stack.toString();
     }
+
+    @Override
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+        for (T elem : stack) {
+            result.append(elem.toString()).append("\n");
+        }
+        return result.toString();
+    }
+
+    @Override
+    public MyIStack<T> deepCopy() throws MyException {
+        MyIStack<T> newStack = new MyStack<>();
+        for (T elem : stack) {
+            newStack.push(elem);
+        }
+        return newStack;
+    }
 }

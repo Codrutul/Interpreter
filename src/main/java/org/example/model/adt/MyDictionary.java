@@ -47,4 +47,30 @@ public class MyDictionary<T1, T2> implements MyIDictionary<T1, T2> {
     public String toString() {
         return dictionary.toString();
     }
+
+    @Override
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<T1, T2> entry : dictionary.entrySet()) {
+            result.append(entry.getKey().toString()).append(" -> ").append(entry.getValue().toString()).append("\n");
+        }
+        return result.toString();
+    }
+
+    @Override
+    public MyIDictionary<T1, T2> deepCopy() throws MyException {
+        MyIDictionary<T1, T2> newDict = new MyDictionary<>();
+        for (Map.Entry<T1, T2> entry : dictionary.entrySet()) {
+            newDict.add(entry.getKey(), entry.getValue());
+        }
+        return newDict;
+    }
+
+    @Override
+    public void remove(T1 id) throws MyException {
+        if (!isDefined(id)) {
+            throw new MyException(id + " is not defined.");
+        }
+        dictionary.remove(id);
+    }
 }

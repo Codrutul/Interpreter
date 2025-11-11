@@ -1,5 +1,8 @@
 package org.example.model.type;
 
+import org.example.model.value.BoolValue;
+import org.example.model.value.Value;
+
 public class BoolType implements Type {
     @Override
     public boolean equals(Object another) {
@@ -10,4 +13,7 @@ public class BoolType implements Type {
     public String toString() {
         return "bool";
     }
+
+    @Override
+    public Value defaultValue() { return new BoolValue(false); }
 }

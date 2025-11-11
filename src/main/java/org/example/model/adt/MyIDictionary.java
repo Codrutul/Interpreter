@@ -10,4 +10,7 @@ public interface MyIDictionary<T1, T2> {
     T2 lookup(T1 id) throws MyException;
     boolean isDefined(T1 id);
     Map<T1, T2> getContent();
+    String toFileString();
+    MyIDictionary<T1, T2> deepCopy() throws MyException;
+    void remove(T1 id) throws MyException;
 }
