@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Repository implements IRepository {
-    private List<PrgState> prgStateList;
+    private final List<PrgState> prgStateList;
     private final String logFilePath;
 
     public Repository(PrgState prgState, String logFilePath) {
