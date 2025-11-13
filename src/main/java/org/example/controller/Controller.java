@@ -8,7 +8,7 @@ import org.example.repository.IRepository;
 
 public class Controller {
     private final IRepository repo;
-    private boolean displayFlag = false;
+    private boolean displayFlag = true;
 
     public Controller(IRepository repo) {
         this.repo = repo;

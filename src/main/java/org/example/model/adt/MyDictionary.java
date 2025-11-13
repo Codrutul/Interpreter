@@ -1,5 +1,6 @@
 package org.example.model.adt;
 
+import org.example.exception.DictionaryException;
 import org.example.exception.MyException;
 
 import java.util.HashMap;
@@ -18,9 +19,9 @@ public class MyDictionary<T1, T2> implements MyIDictionary<T1, T2> {
     }
 
     @Override
-    public void update(T1 v1, T2 v2) throws MyException {
+    public void update(T1 v1, T2 v2) throws DictionaryException {
         if (!isDefined(v1)) {
-            throw new MyException(v1 + " is not defined.");
+            throw new DictionaryException(v1 + " is not defined.");
         }
         dictionary.put(v1, v2);
     }
@@ -28,7 +29,7 @@ public class MyDictionary<T1, T2> implements MyIDictionary<T1, T2> {
     @Override
     public T2 lookup(T1 id) throws MyException {
         if (!isDefined(id)) {
-            throw new MyException(id + " is not defined.");
+            throw new DictionaryException(id + " is not defined.");
         }
         return dictionary.get(id);
     }

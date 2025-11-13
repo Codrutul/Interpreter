@@ -1,6 +1,7 @@
 package org.example.model.adt;
 
 import org.example.exception.MyException;
+import org.example.exception.StackException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,9 +16,9 @@ public class MyStack<T> implements MyIStack<T> {
     }
 
     @Override
-    public T pop() throws MyException {
+    public T pop() throws StackException {
         if (stack.isEmpty()) {
-            throw new MyException("Stack is empty");
+            throw new StackException("Stack is empty");
         }
         return stack.pop();
     }

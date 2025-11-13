@@ -1,6 +1,7 @@
 package org.example.model.stmt;
 
 import org.example.exception.MyException;
+import org.example.exception.VariableNotDefinedException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
@@ -33,7 +34,7 @@ public class AssignStmt implements IStmt {
                 throw new MyException("declared type of variable" + id + " and type of the assigned expression do not match");
             }
         } else {
-            throw new MyException("the used variable" + id + " was not declared before");
+            throw new VariableNotDefinedException("the used variable" + id + " was not declared before");
         }
         return state;
     }
