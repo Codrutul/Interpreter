@@ -17,8 +17,15 @@ import org.example.model.value.StringValue;
 import org.example.repository.IRepository;
 import org.example.repository.Repository;
 
+import java.util.Scanner;
+
 public class Interpreter {
     public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the log file path:");
+        String filename = scanner.nextLine();
+
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));
 
@@ -26,7 +33,7 @@ public class Interpreter {
         IStmt ex1 = new CompStmt(new VarDeclStmt("v", new IntType()),
                 new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(2))), new PrintStmt(new VarExp("v"))));
         PrgState prg1 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), ex1);
-        IRepository repo1 = new Repository(prg1, "log1.txt");
+        IRepository repo1 = new Repository(prg1, filename);
         Controller ctr1 = new Controller(repo1);
         menu.addCommand(new RunExample("1", ex1.toString(), ctr1));
 
@@ -36,7 +43,7 @@ public class Interpreter {
                         new CompStmt(new AssignStmt("a", new ArithExp(1, new ValueExp(new IntValue(2)), new ArithExp(3, new ValueExp(new IntValue(3)), new ValueExp(new IntValue(5))))),
                                 new CompStmt(new AssignStmt("b", new ArithExp(1, new VarExp("a"), new ValueExp(new IntValue(1)))), new PrintStmt(new VarExp("b"))))));
         PrgState prg2 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), ex2);
-        IRepository repo2 = new Repository(prg2, "log2.txt");
+        IRepository repo2 = new Repository(prg2, filename);
         Controller ctr2 = new Controller(repo2);
         menu.addCommand(new RunExample("2", ex2.toString(), ctr2));
 
@@ -46,7 +53,7 @@ public class Interpreter {
                         new CompStmt(new AssignStmt("a", new ValueExp(new BoolValue(true))),
                                 new CompStmt(new IfStmt(new VarExp("a"), new AssignStmt("v", new ValueExp(new IntValue(2))), new AssignStmt("v", new ValueExp(new IntValue(3)))), new PrintStmt(new VarExp("v"))))));
         PrgState prg3 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), ex3);
-        IRepository repo3 = new Repository(prg3, "log3.txt");
+        IRepository repo3 = new Repository(prg3, filename);
         Controller ctr3 = new Controller(repo3);
         menu.addCommand(new RunExample("3", ex3.toString(), ctr3));
 
@@ -61,7 +68,7 @@ public class Interpreter {
                                                                 new CompStmt(new PrintStmt(new VarExp("varc")),
                                                                         new CloseRFile(new VarExp("varf"))))))))));
         PrgState prg4 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), ex4);
-        IRepository repo4 = new Repository(prg4, "log4.txt");
+        IRepository repo4 = new Repository(prg4, filename);
         Controller ctr4 = new Controller(repo4);
         menu.addCommand(new RunExample("4", ex4.toString(), ctr4));
 
@@ -72,7 +79,7 @@ public class Interpreter {
                                 new CompStmt(new AssignStmt("b", new ValueExp(new IntValue(12))),
                                         new PrintStmt(new RelationalExp("<", new VarExp("a"), new VarExp("b")))))));
         PrgState prg5 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), ex5);
-        IRepository repo5 = new Repository(prg5, "log5.txt");
+        IRepository repo5 = new Repository(prg5, filename);
         Controller ctr5 = new Controller(repo5);
         menu.addCommand(new RunExample("5", ex5.toString(), ctr5));
 
