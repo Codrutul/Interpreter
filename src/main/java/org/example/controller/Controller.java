@@ -23,7 +23,7 @@ public class Controller {
     }
 
     public void allStep() throws MyException {
-        PrgState prg = repo.getCrtPrg(); // repo is the controller field of type MyRepoInterface
+        PrgState prg = repo.getCrtPrg();
         repo.logPrgStateExec();
         while (!prg.getStk().isEmpty()) {
             oneStep(prg);
@@ -31,7 +31,6 @@ public class Controller {
         }
     }
 
-    // Added getter so the view can read the repository/prg state after execution
     public IRepository getRepo() {
         return repo;
     }

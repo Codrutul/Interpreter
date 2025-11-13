@@ -46,3 +46,51 @@ Out:
 FileTable:
 
 ---------------------------------
+ExeStack:
+(int v;(v=2;print(v)))
+SymTable:
+Out:
+FileTable:
+
+---------------------------------
+ExeStack:
+(v=2;print(v))
+int v
+SymTable:
+Out:
+FileTable:
+
+---------------------------------
+ExeStack:
+(v=2;print(v))
+SymTable:
+v -> 0
+Out:
+FileTable:
+
+---------------------------------
+ExeStack:
+print(v)
+v=2
+SymTable:
+v -> 0
+Out:
+FileTable:
+
+---------------------------------
+ExeStack:
+print(v)
+SymTable:
+v -> 2
+Out:
+FileTable:
+
+---------------------------------
+ExeStack:
+SymTable:
+v -> 2
+Out:
+2
+FileTable:
+
+---------------------------------

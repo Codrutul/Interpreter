@@ -14,7 +14,6 @@ public class RunExample extends Command {
     public void execute() {
         try{
             ctr.allStep();
-            // after execution, print the output list to console
             try {
                 var prg = ctr.getRepo().getCrtPrg();
                 var out = prg.getOut();

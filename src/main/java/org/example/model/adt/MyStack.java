@@ -32,12 +32,6 @@ public class MyStack<T> implements MyIStack<T> {
         return stack.isEmpty();
     }
 
-    @Override
-    public List<T> getReversed() {
-        List<T> l = Arrays.asList((T[]) stack.toArray());
-        Collections.reverse(l);
-        return l;
-    }
 
     @Override
     public String toString() {
