@@ -8,19 +8,18 @@ import org.example.model.exp.Exp;
 import org.example.model.value.BoolValue;
 import org.example.model.value.Value;
 
-public class IfStmt implements IStmt {
+public class WhileStmt implements IStmt {
     private final Exp exp;
-    private final IStmt thenS, elseS;
+    private final IStmt stmt;
 
-    public IfStmt(Exp e, IStmt t, IStmt el) {
-        exp = e;
-        thenS = t;
-        elseS = el;
+    public WhileStmt(Exp exp, IStmt stmt) {
+        this.exp = exp;
+        this.stmt = stmt;
     }
 
     @Override
     public String toString() {
-        return "IF(" + exp.toString() + ") THEN(" + thenS.toString() + ") ELSE(" + elseS.toString() + ")";
+        return "while(" + exp.toString() + ")" + stmt.toString();
     }
 
     @Override
@@ -28,18 +27,20 @@ public class IfStmt implements IStmt {
         MyIDictionary<String, Value> symTable = state.getSymTable();
         MyIHeap<Integer, Value> heap = state.getHeap();
         Value cond = exp.eval(symTable, heap);
-        if (cond instanceof BoolValue) {
-            boolean b = ((BoolValue) cond).getVal();
-            if (b) state.getStk().push(thenS);
-            else state.getStk().push(elseS);
-        } else {
+        if (!(cond instanceof BoolValue)) {
             throw new MyException("condition exp is not a boolean");
+        }
+        boolean b = ((BoolValue) cond).getVal();
+        if (b) {
+            // push while and then body so body executes next
+            state.getStk().push(this);
+            state.getStk().push(stmt);
         }
         return state;
     }
 
     @Override
     public IStmt deepCopy() {
-        return new IfStmt(exp.deepCopy(), thenS.deepCopy(), elseS.deepCopy());
+        return new WhileStmt(exp.deepCopy(), stmt.deepCopy());
     }
 }

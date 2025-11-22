@@ -2,9 +2,10 @@ package org.example.model.stmt;
 
 import org.example.exception.MyException;
 import org.example.model.PrgState;
+import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
+import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
-import org.example.model.type.StringType;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
 
@@ -14,34 +15,37 @@ import java.io.IOException;
 public class CloseRFile implements IStmt {
     private final Exp exp;
 
-    public CloseRFile(Exp exp) {
-        this.exp = exp;
+    public CloseRFile(Exp e) {
+        exp = e;
+    }
+
+    @Override
+    public String toString() {
+        return "closeRFile(" + exp.toString() + ")";
     }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
-        Value value = exp.eval(state.getSymTable());
-        if (!value.getType().equals(new StringType())) {
-            throw new MyException("File path expression must evaluate to a string.");
+        MyIDictionary<String, Value> symTable = state.getSymTable();
+        MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
+        MyIHeap<Integer, Value> heap = state.getHeap();
+        Value value = exp.eval(symTable, heap);
+        if (!(value instanceof StringValue)) {
+            throw new MyException("The file name expression is not a string");
         }
-
-        StringValue fileName = (StringValue) value;
-        MyIDictionary<String, BufferedReader> fileTable = state.getFileTable();
-        if (!fileTable.isDefined(fileName.getVal())) {
-            throw new MyException("File '" + fileName.getVal() + "' is not open.");
+        String fileName = ((StringValue) value).getVal();
+        if (!fileTable.isDefined(fileName)) {
+            throw new MyException("File not opened: " + fileName);
         }
-
+        BufferedReader br = fileTable.lookup(fileName);
         try {
-            fileTable.lookup(fileName.getVal()).close();
-            fileTable.remove(fileName.getVal());
+            br.close();
+            fileTable.remove(fileName);
         } catch (IOException e) {
-            throw new MyException("Error closing file '" + fileName.getVal() + "': " + e.getMessage());
+            throw new MyException("Error closing file: " + e.getMessage());
         }
         return state;
     }
-
-    @Override
-    public String toString() { return "closeRFile(" + exp.toString() + ")"; }
 
     @Override
     public IStmt deepCopy() {

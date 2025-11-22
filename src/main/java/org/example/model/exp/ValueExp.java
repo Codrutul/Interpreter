@@ -2,6 +2,7 @@ package org.example.model.exp;
 
 import org.example.exception.MyException;
 import org.example.model.adt.MyIDictionary;
+import org.example.model.adt.MyIHeap;
 import org.example.model.value.Value;
 
 public class ValueExp implements Exp {
@@ -12,7 +13,7 @@ public class ValueExp implements Exp {
     }
 
     @Override
-    public Value eval(MyIDictionary<String, Value> tbl) throws MyException {
+    public Value eval(MyIDictionary<String, Value> tbl, MyIHeap<Integer, Value> hp) throws MyException {
         return e;
     }
 

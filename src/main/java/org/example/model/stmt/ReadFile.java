@@ -2,10 +2,10 @@ package org.example.model.stmt;
 
 import org.example.exception.MyException;
 import org.example.model.PrgState;
+import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
+import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
-import org.example.model.type.IntType;
-import org.example.model.type.StringType;
 import org.example.model.value.IntValue;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
@@ -17,44 +17,48 @@ public class ReadFile implements IStmt {
     private final Exp exp;
     private final String varName;
 
-    public ReadFile(Exp exp, String varName) {
-        this.exp = exp;
+    public ReadFile(Exp e, String varName) {
+        this.exp = e;
         this.varName = varName;
+    }
+
+    @Override
+    public String toString() {
+        return "readFile(" + exp.toString() + "," + varName + ")";
     }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
         MyIDictionary<String, Value> symTable = state.getSymTable();
-        if (!symTable.isDefined(varName) || !symTable.lookup(varName).getType().equals(new IntType())) {
-            throw new MyException("Variable '" + varName + "' is not defined or is not of type int.");
+        MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
+        MyIHeap<Integer, Value> heap = state.getHeap();
+
+        Value value = exp.eval(symTable, heap);
+        if (!(value instanceof StringValue)) {
+            throw new MyException("The file name expression is not a string");
+        }
+        String fileName = ((StringValue) value).getVal();
+        if (!fileTable.isDefined(fileName)) {
+            throw new MyException("File not opened: " + fileName);
         }
 
-        Value value = exp.eval(symTable);
-        if (!value.getType().equals(new StringType())) {
-            throw new MyException("File path expression must evaluate to a string.");
-        }
-
-        StringValue fileName = (StringValue) value;
-        MyIDictionary<String, BufferedReader> fileTable = state.getFileTable();
-        BufferedReader br;
-        try {
-            br = fileTable.lookup(fileName.getVal());
-        } catch (MyException e) {
-            throw new MyException("File '" + fileName.getVal() + "' is not open.");
-        }
-
+        BufferedReader br = fileTable.lookup(fileName);
         try {
             String line = br.readLine();
-            int val = (line == null || line.isEmpty()) ? 0 : Integer.parseInt(line);
-            symTable.update(varName, new IntValue(val));
-        } catch (IOException | NumberFormatException e) {
-            throw new MyException("Error reading from file '" + fileName.getVal() + "': " + e.getMessage());
+            int val = 0;
+            if (line != null) {
+                val = Integer.parseInt(line);
+            }
+            if (symTable.isDefined(varName)) {
+                symTable.update(varName, new IntValue(val));
+            } else {
+                throw new MyException("Variable " + varName + " is not declared");
+            }
+        } catch (IOException e) {
+            throw new MyException("Error reading file: " + e.getMessage());
         }
         return state;
     }
-
-    @Override
-    public String toString() { return "readFile(" + exp.toString() + ", " + varName + ")"; }
 
     @Override
     public IStmt deepCopy() {

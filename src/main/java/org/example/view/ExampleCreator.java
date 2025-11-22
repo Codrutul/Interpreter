@@ -65,4 +65,14 @@ public class ExampleCreator {
                                         new PrintStmt(new RelationalExp("<", new VarExp("a"), new VarExp("b")))))));
 
     }
+
+    // Example 6: while example: int v; v=4; while(v>0) print(v); v=v-1; print(v)
+    public static IStmt getExample6() {
+        return new CompStmt(new VarDeclStmt("v", new IntType()),
+                new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(4))),
+                        new CompStmt(new WhileStmt(new RelationalExp(
+                                ">", new VarExp("v"), new ValueExp(new IntValue(0))),
+                                new CompStmt(new PrintStmt(new VarExp("v")), new AssignStmt("v", new ArithExp(2, new VarExp("v"), new ValueExp(new IntValue(1)))))),
+                                new PrintStmt(new VarExp("v")))));
+    }
 }

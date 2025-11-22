@@ -3,6 +3,7 @@ package org.example.model.stmt;
 import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIDictionary;
+import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
 import org.example.model.type.Type;
 import org.example.model.value.Value;
@@ -24,8 +25,9 @@ public class AssignStmt implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException {
         MyIDictionary<String, Value> symTbl = state.getSymTable();
+        MyIHeap<Integer, Value> heap = state.getHeap();
         if (symTbl.isDefined(id)) {
-            Value val = exp.eval(symTbl);
+            Value val = exp.eval(symTbl, heap);
             Type typId = (symTbl.lookup(id)).getType();
             if ((val.getType()).equals(typId)) {
                 symTbl.update(id, val);
