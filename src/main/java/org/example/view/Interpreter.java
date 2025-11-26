@@ -68,6 +68,12 @@ public class Interpreter {
         Controller ctr6 = new Controller(repo6);
         menu.addCommand(new RunExample("6", ex6.toString(), ctr6));
 
+        IStmt ex7 = ExampleCreator.getExample7();
+        PrgState prg7 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), new MyHeap(), ex7);
+        IRepository repo7 = new Repository(prg7, filename);
+        Controller ctr7 = new Controller(repo7);
+        menu.addCommand(new RunExample("7", ex7.toString(), ctr7));
+
 
         menu.show();
     }

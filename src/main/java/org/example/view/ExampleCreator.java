@@ -5,10 +5,7 @@ import org.example.model.adt.MyDictionary;
 import org.example.model.adt.MyFileTable;
 import org.example.model.adt.MyList;
 import org.example.model.adt.MyStack;
-import org.example.model.exp.ArithExp;
-import org.example.model.exp.RelationalExp;
-import org.example.model.exp.ValueExp;
-import org.example.model.exp.VarExp;
+import org.example.model.exp.*;
 import org.example.model.stmt.*;
 import org.example.model.type.BoolType;
 import org.example.model.type.IntType;
@@ -74,5 +71,15 @@ public class ExampleCreator {
                                 ">", new VarExp("v"), new ValueExp(new IntValue(0))),
                                 new CompStmt(new PrintStmt(new VarExp("v")), new AssignStmt("v", new ArithExp(2, new VarExp("v"), new ValueExp(new IntValue(1)))))),
                                 new PrintStmt(new VarExp("v")))));
+    }
+
+    // Example 7: heap example
+    // Ref int v; new(v,20); print(rH(v)); wH(v,30); print(rH(v)+5)
+    public static IStmt getExample7() {
+        return new CompStmt(new VarDeclStmt("v", new org.example.model.type.RefType(new IntType())),
+                new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))),
+                        new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v"))),
+                                new CompStmt(new WriteHeapStmt("v", new ValueExp(new IntValue(30))),
+                                        new PrintStmt(new ArithExp(1, new ReadHeapExp(new VarExp("v")), new ValueExp(new IntValue(5))))))));
     }
 }
