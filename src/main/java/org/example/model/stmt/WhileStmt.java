@@ -32,7 +32,6 @@ public class WhileStmt implements IStmt {
         }
         boolean b = ((BoolValue) cond).getVal();
         if (b) {
-            // push while and then body so body executes next
             state.getStk().push(this);
             state.getStk().push(stmt);
         }

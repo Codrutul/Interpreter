@@ -6,6 +6,8 @@ import org.example.model.adt.MyIHeap;
 import org.example.model.value.RefValue;
 import org.example.model.value.Value;
 
+import java.util.Optional;
+
 public class ReadHeapExp implements Exp {
     private final Exp exp;
 
@@ -19,7 +21,12 @@ public class ReadHeapExp implements Exp {
         if (!(v instanceof RefValue)) throw new MyException("readHeap argument is not a RefValue");
         int addr = ((RefValue) v).getAddr();
         if (!hp.isDefined(addr)) throw new MyException("address " + addr + " is not defined in heap");
-        return hp.lookup(addr);
+        Optional<Value> valueOptional = hp. lookup(addr);
+        if (valueOptional.isPresent())
+            return valueOptional.get();
+        else
+            throw new MyException("address " + addr + "is not in the heap");
+
     }
 
     @Override
@@ -28,6 +35,8 @@ public class ReadHeapExp implements Exp {
     }
 
     @Override
-    public String toString() { return "rH(" + exp.toString() + ")"; }
+    public String toString() {
+        return "rH(" + exp.toString() + ")";
+    }
 }
 

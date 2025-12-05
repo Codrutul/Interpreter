@@ -5,6 +5,7 @@ import org.example.model.value.Value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MyHeap implements MyIHeap<Integer, Value> {
     private final HashMap<Integer, Value> heap;
@@ -16,7 +17,7 @@ public class MyHeap implements MyIHeap<Integer, Value> {
     }
 
     @Override
-    public int add(Integer ignoredKey, Value value) throws MyException {
+    public int add(Value value) throws MyException {
         int addr = freeLocation;
         heap.put(addr, value);
         freeLocation++;
@@ -24,9 +25,8 @@ public class MyHeap implements MyIHeap<Integer, Value> {
     }
 
     @Override
-    public Value lookup(Integer key) throws MyException {
-        if (!heap.containsKey(key)) throw new MyException("address " + key + " is not in the heap");
-        return heap.get(key);
+    public Optional<Value> lookup(Integer key) throws MyException {
+        return Optional.ofNullable(heap.get(key));
     }
 
     @Override

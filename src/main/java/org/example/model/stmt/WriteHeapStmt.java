@@ -33,8 +33,9 @@ public class WriteHeapStmt implements IStmt {
         int addr = ((RefValue) varVal).getAddr();
         if (!heap.isDefined(addr)) throw new MyException("address " + addr + " is not in the heap");
         Value evalVal = expr.eval(symTable, heap);
-        RefType refType = (RefType) ((RefValue) varVal).getType();
-        if (!evalVal.getType().equals(refType.getInner())) throw new MyException("Type of expression and locationType do not match");
+        RefType refType = (RefType) varVal.getType();
+        if (!evalVal.getType().equals(refType.getInner()))
+            throw new MyException("Type of expression and locationType do not match");
         heap.update(addr, evalVal);
         return state;
     }

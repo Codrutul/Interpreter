@@ -73,9 +73,15 @@ public class Controller {
         while (!prg.getStk().isEmpty()) {
             oneStep(prg);
             repo.logPrgStateExec();
-            MyIHeap<Integer, Value> heap = prg.getHeap();
-            Map<Integer, Value> newContent = safeGarbageCollector(prg.getSymTable().getContent().values(), heap.getContent());
-            heap.setContent(newContent);
+
+//            prg.getHeap().setContent(unsafeGarbageCollector(
+//                    getAddrFromSymTable(prg.getSymTable().getContent().values()),
+//                    prg.getHeap().getContent()));
+
+            prg.getHeap().setContent(safeGarbageCollector(
+                    prg.getSymTable().getContent().values(),
+                    prg.getHeap().getContent()));
+
             repo.logPrgStateExec();
         }
     }
