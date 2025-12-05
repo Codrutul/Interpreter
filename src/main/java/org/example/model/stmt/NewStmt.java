@@ -33,7 +33,7 @@ public class NewStmt implements IStmt {
         Value evalVal = expr.eval(symTable, heap);
         RefType refType = (RefType) varVal.getType();
         if (!evalVal.getType().equals(refType.getInner())) throw new MyException("Type of expression and locationType do not match");
-        int addr = heap.add(0, evalVal);
+        int addr = heap.add(evalVal);
         RefValue newRef = new RefValue(addr, refType.getInner());
         symTable.update(varName, newRef);
         return state;

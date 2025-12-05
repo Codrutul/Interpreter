@@ -9,6 +9,7 @@ import org.example.model.exp.*;
 import org.example.model.stmt.*;
 import org.example.model.type.BoolType;
 import org.example.model.type.IntType;
+import org.example.model.type.RefType;
 import org.example.model.type.StringType;
 import org.example.model.value.BoolValue;
 import org.example.model.value.IntValue;
@@ -74,12 +75,13 @@ public class ExampleCreator {
     }
 
     // Example 7: heap example
-    // Ref int v; new(v,20); print(rH(v)); wH(v,30); print(rH(v)+5)
+    //Ref int v;new(v,20);Ref Ref int a; new(a,v); new(v,30);print(rH(rH(a)))
     public static IStmt getExample7() {
-        return new CompStmt(new VarDeclStmt("v", new org.example.model.type.RefType(new IntType())),
-                new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))),
-                        new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v"))),
-                                new CompStmt(new WriteHeapStmt("v", new ValueExp(new IntValue(30))),
-                                        new PrintStmt(new ArithExp(1, new ReadHeapExp(new VarExp("v")), new ValueExp(new IntValue(5))))))));
+        return new CompStmt(
+                new VarDeclStmt("v", new RefType(new IntType())),
+                new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))), new CompStmt(
+                                new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(new NewStmt("a", new VarExp("v")), new CompStmt(new NewStmt("v", new ValueExp(new IntValue(30))),
+                                                new PrintStmt(new ReadHeapExp(new ReadHeapExp(new VarExp("a")))))))));
     }
+
 }
