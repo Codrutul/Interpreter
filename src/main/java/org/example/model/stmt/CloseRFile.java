@@ -4,7 +4,6 @@ import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
-import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
@@ -28,8 +27,7 @@ public class CloseRFile implements IStmt {
     public PrgState execute(PrgState state) throws MyException {
         MyIDictionary<String, Value> symTable = state.getSymTable();
         MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
-        MyIHeap<Integer, Value> heap = state.getHeap();
-        Value value = exp.eval(symTable, heap);
+        Value value = exp.eval(symTable, state.getHeap());
         if (!(value instanceof StringValue)) {
             throw new MyException("The file name expression is not a string");
         }
@@ -40,11 +38,11 @@ public class CloseRFile implements IStmt {
         BufferedReader br = fileTable.lookup(fileName);
         try {
             br.close();
-            fileTable.remove(fileName);
         } catch (IOException e) {
             throw new MyException("Error closing file: " + e.getMessage());
         }
-        return state;
+        fileTable.remove(fileName);
+        return null;
     }
 
     @Override

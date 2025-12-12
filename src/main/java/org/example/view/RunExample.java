@@ -2,7 +2,10 @@ package org.example.view;
 
 import org.example.controller.Controller;
 import org.example.exception.MyException;
+import org.example.model.PrgState;
 import org.example.model.value.Value;
+
+import java.util.List;
 
 public class RunExample extends Command {
     private final Controller ctr;
@@ -15,11 +18,13 @@ public class RunExample extends Command {
         try{
             ctr.allStep();
             try {
-                var prg = ctr.getRepo().getCrtPrg();
-                var out = prg.getOut();
-                System.out.println("Program output:");
-                for (Value v : out.getList()) {
-                    System.out.println(v.toString());
+                List<PrgState> prgList = ctr.getRepo().getPrgList();
+                System.out.println("Program output(s):");
+                for (PrgState prg : prgList) {
+                    var out = prg.getOut();
+                    for (Value v : out.getList()) {
+                        System.out.println(v.toString());
+                    }
                 }
             } catch (Exception e) {
                 // if anything goes wrong printing the output, show message

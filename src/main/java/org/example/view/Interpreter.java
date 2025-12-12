@@ -5,17 +5,9 @@ import org.example.model.PrgState;
 import org.example.model.adt.MyDictionary;
 import org.example.model.adt.MyFileTable;
 import org.example.model.adt.MyHeap;
-import org.example.model.adt.MyIHeap;
 import org.example.model.adt.MyList;
 import org.example.model.adt.MyStack;
-import org.example.model.exp.*;
 import org.example.model.stmt.*;
-import org.example.model.type.BoolType;
-import org.example.model.type.IntType;
-import org.example.model.type.StringType;
-import org.example.model.value.BoolValue;
-import org.example.model.value.IntValue;
-import org.example.model.value.StringValue;
 import org.example.repository.IRepository;
 import org.example.repository.Repository;
 
@@ -74,6 +66,11 @@ public class Interpreter {
         Controller ctr7 = new Controller(repo7);
         menu.addCommand(new RunExample("7", ex7.toString(), ctr7));
 
+        IStmt ex8 = ExampleCreator.getExample8();
+        PrgState prg8 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), new MyHeap(), ex8);
+        IRepository repo8 = new Repository(prg8, filename);
+        Controller ctr8 = new Controller(repo8);
+        menu.addCommand(new RunExample("8", ex8.toString(), ctr8));
 
         menu.show();
     }

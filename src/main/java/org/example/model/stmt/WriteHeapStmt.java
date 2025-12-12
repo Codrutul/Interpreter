@@ -37,7 +37,7 @@ public class WriteHeapStmt implements IStmt {
         if (!evalVal.getType().equals(refType.getInner()))
             throw new MyException("Type of expression and locationType do not match");
         heap.update(addr, evalVal);
-        return state;
+        return null;
     }
 
     @Override
@@ -45,4 +45,3 @@ public class WriteHeapStmt implements IStmt {
         return new WriteHeapStmt(varName, expr.deepCopy());
     }
 }
-

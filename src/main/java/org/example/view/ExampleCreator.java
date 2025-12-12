@@ -1,10 +1,5 @@
 package org.example.view;
 
-import org.example.model.PrgState;
-import org.example.model.adt.MyDictionary;
-import org.example.model.adt.MyFileTable;
-import org.example.model.adt.MyList;
-import org.example.model.adt.MyStack;
 import org.example.model.exp.*;
 import org.example.model.stmt.*;
 import org.example.model.type.BoolType;
@@ -82,6 +77,39 @@ public class ExampleCreator {
                 new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))), new CompStmt(
                                 new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(new NewStmt("a", new VarExp("v")), new CompStmt(new NewStmt("v", new ValueExp(new IntValue(30))),
                                                 new PrintStmt(new ReadHeapExp(new ReadHeapExp(new VarExp("a")))))))));
+    }
+
+    // Example 8:
+    // int v; Ref int a; v=10; new(a,22);
+    // fork( wH(a,30); v=32; print(v); print(rH(a)) );
+    // print(v); print(rH(a))
+    public static IStmt getExample8() {
+        IStmt declV = new VarDeclStmt("v", new IntType());
+        IStmt declA = new VarDeclStmt("a", new RefType(new IntType()));
+        IStmt assignV10 = new AssignStmt("v", new ValueExp(new IntValue(10)));
+        IStmt newA22 = new NewStmt("a", new ValueExp(new IntValue(22)));
+
+        // fork body: wH(a,30); v=32; print(v); print(rH(a))
+        IStmt forkBody = new CompStmt(
+                new WriteHeapStmt("a", new ValueExp(new IntValue(30))),
+                new CompStmt(
+                        new AssignStmt("v", new ValueExp(new IntValue(32))),
+                        new CompStmt(
+                                new PrintStmt(new VarExp("v")),
+                                new PrintStmt(new ReadHeapExp(new VarExp("a")))
+                        )
+                )
+        );
+        IStmt forkStmt = new ForkStmt(forkBody);
+
+        // after fork: print(v); print(rH(a))
+        IStmt after = new CompStmt(new PrintStmt(new VarExp("v")), new PrintStmt(new ReadHeapExp(new VarExp("a"))));
+
+        return new CompStmt(declV,
+                new CompStmt(declA,
+                        new CompStmt(assignV10,
+                                new CompStmt(newA22,
+                                        new CompStmt(forkStmt, after)))));
     }
 
 }

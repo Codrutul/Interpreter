@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Repository implements IRepository {
-    private final List<PrgState> prgStateList;
+    private List<PrgState> prgStateList;
     private final String logFilePath;
 
     public Repository(PrgState prgState, String logFilePath) {
@@ -21,15 +21,19 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public PrgState getCrtPrg() {
-        return prgStateList.get(0);
+    public List<PrgState> getPrgList() {
+        return prgStateList;
     }
 
     @Override
-    public void logPrgStateExec() throws MyException {
+    public void setPrgList(List<PrgState> prgList) {
+        this.prgStateList = prgList;
+    }
+
+    @Override
+    public void logPrgStateExec(PrgState state) throws MyException {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
-            PrgState programState = getCrtPrg();
-            logFile.println(programState.toFileString());
+            logFile.println(state.toFileString());
             logFile.println("---------------------------------");
         } catch (IOException e) {
             throw new MyException("Error writing to log file: " + e.getMessage());

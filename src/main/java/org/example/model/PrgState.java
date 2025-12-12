@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.exception.MyException;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
@@ -18,6 +19,14 @@ public class PrgState {
     private MyIHeap<Integer, Value> heap;
     private IStmt originalProgram; //optional field, but good to have
 
+    private final int id;
+    private static int lastId = 0;
+
+    private static synchronized int generateId() {
+        lastId++;
+        return lastId;
+    }
+
     public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg) {
         exeStack = stk;
         symTable = symtbl;
@@ -26,6 +35,7 @@ public class PrgState {
         this.heap = heap;
         originalProgram = prg.deepCopy(); //recreate the entire original prg
         stk.push(prg);
+        this.id = generateId();
     }
 
     public MyIStack<IStmt> getStk() {
@@ -46,9 +56,23 @@ public class PrgState {
 
     public MyIHeap<Integer, Value> getHeap() { return heap; }
 
+    public int getId() { return id; }
+
+    public Boolean isNotCompleted() {
+        return !exeStack.isEmpty();
+    }
+
+    public PrgState oneStep() throws MyException {
+        if (exeStack.isEmpty())
+            throw new MyException("prgstate stack is empty");
+        IStmt crtStmt = exeStack.pop();
+        return crtStmt.execute(this);
+    }
+
     @Override
     public String toString() {
-        return "ExeStack: " + exeStack.toString() + "\n" +
+        return "Id=" + id + "\n" +
+                "ExeStack: " + exeStack.toString() + "\n" +
                 "Symbol Table: " + symTable.toString() + "\n" +
                 "Out: " + out.toString() + "\n" +
                 "FileTable: " + fileTable.toString() + "\n" +
@@ -56,7 +80,8 @@ public class PrgState {
     }
 
     public String toFileString() {
-        return "ExeStack:\n" + exeStack.toFileString() +
+        return "Id=" + id + "\n" +
+                "ExeStack:\n" + exeStack.toFileString() +
                 "SymTable:\n" + symTable.toFileString() +
                 "Out:\n" + out.toFileString() +
                 "FileTable:\n" + fileTable.toFileString() +

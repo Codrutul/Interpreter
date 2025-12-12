@@ -36,7 +36,7 @@ public class NewStmt implements IStmt {
         int addr = heap.add(evalVal);
         RefValue newRef = new RefValue(addr, refType.getInner());
         symTable.update(varName, newRef);
-        return state;
+        return null;
     }
 
     @Override
@@ -44,4 +44,3 @@ public class NewStmt implements IStmt {
         return new NewStmt(varName, expr.deepCopy());
     }
 }
-

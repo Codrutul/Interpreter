@@ -2,8 +2,7 @@ package org.example.model.stmt;
 
 import org.example.exception.MyException;
 import org.example.model.PrgState;
-import org.example.model.adt.MyIDictionary;
-import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyIStack;
 import org.example.model.exp.Exp;
 import org.example.model.value.BoolValue;
 import org.example.model.value.Value;
@@ -19,23 +18,22 @@ public class WhileStmt implements IStmt {
 
     @Override
     public String toString() {
-        return "while(" + exp.toString() + ")" + stmt.toString();
+        return "while(" + exp.toString() + ") do(" + stmt.toString() + ")";
     }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
-        MyIDictionary<String, Value> symTable = state.getSymTable();
-        MyIHeap<Integer, Value> heap = state.getHeap();
-        Value cond = exp.eval(symTable, heap);
-        if (!(cond instanceof BoolValue)) {
-            throw new MyException("condition exp is not a boolean");
+        Value val = exp.eval(state.getSymTable(), state.getHeap());
+        if (!(val instanceof BoolValue)) {
+            throw new MyException("Conditional expression is not a boolean");
         }
-        boolean b = ((BoolValue) cond).getVal();
-        if (b) {
-            state.getStk().push(this);
-            state.getStk().push(stmt);
+        BoolValue b = (BoolValue) val;
+        MyIStack<IStmt> stk = state.getStk();
+        if (b.getVal()) {
+            stk.push(this);
+            stk.push(stmt);
         }
-        return state;
+        return null;
     }
 
     @Override
