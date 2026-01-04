@@ -3,6 +3,7 @@ package org.example.model.exp;
 import org.example.exception.MyException;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIHeap;
+import org.example.model.type.Type;
 import org.example.model.value.Value;
 
 public class ValueExp implements Exp {
@@ -25,5 +26,10 @@ public class ValueExp implements Exp {
     @Override
     public Exp deepCopy() {
         return new ValueExp(e);
+    }
+
+    @Override
+    public Type typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        return e.getType();
     }
 }

@@ -3,7 +3,10 @@ package org.example.model.stmt;
 import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIStack;
+import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
+import org.example.model.type.BoolType;
+import org.example.model.type.Type;
 import org.example.model.value.BoolValue;
 import org.example.model.value.Value;
 
@@ -39,5 +42,14 @@ public class WhileStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new WhileStmt(exp.deepCopy(), stmt.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type t = exp.typecheck(typeEnv);
+        if (t.equals(new BoolType())) {
+            stmt.typecheck(typeEnv.deepCopy());
+            return typeEnv;
+        } else throw new MyException("The condition of WHILE has not the type bool");
     }
 }

@@ -5,6 +5,8 @@ import org.example.model.PrgState;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
+import org.example.model.type.StringType;
+import org.example.model.type.Type;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
 
@@ -48,5 +50,12 @@ public class CloseRFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new CloseRFile(exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type t = exp.typecheck(typeEnv);
+        if (t.equals(new StringType())) return typeEnv;
+        else throw new MyException("CloseRFile: expression is not a string");
     }
 }

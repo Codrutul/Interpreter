@@ -6,6 +6,9 @@ import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
+import org.example.model.type.IntType;
+import org.example.model.type.StringType;
+import org.example.model.type.Type;
 import org.example.model.value.IntValue;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
@@ -63,5 +66,15 @@ public class ReadFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new ReadFile(exp.deepCopy(), varName);
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type tExp = exp.typecheck(typeEnv);
+        Type tVar = typeEnv.lookup(varName);
+        if (tExp.equals(new StringType())) {
+            if (tVar.equals(new IntType())) return typeEnv;
+            else throw new MyException("ReadFile: variable is not of type int");
+        } else throw new MyException("ReadFile: file expression is not a string");
     }
 }

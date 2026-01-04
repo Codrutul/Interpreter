@@ -8,6 +8,7 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIHeap;
+import org.example.model.type.Type;
 import org.example.model.value.Value;
 
 import java.io.BufferedReader;
@@ -41,5 +42,11 @@ public class ForkStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new ForkStmt(forkedStmt.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        forkedStmt.typecheck(typeEnv.deepCopy());
+        return typeEnv;
     }
 }

@@ -3,6 +3,8 @@ package org.example.model.exp;
 import org.example.exception.MyException;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIHeap;
+import org.example.model.type.RefType;
+import org.example.model.type.Type;
 import org.example.model.value.RefValue;
 import org.example.model.value.Value;
 
@@ -38,5 +40,13 @@ public class ReadHeapExp implements Exp {
     public String toString() {
         return "rH(" + exp.toString() + ")";
     }
-}
 
+    @Override
+    public Type typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type typ = exp.typecheck(typeEnv);
+        if (typ instanceof RefType) {
+            RefType reft = (RefType) typ;
+            return reft.getInner();
+        } else throw new MyException("the rH argument is not a Ref Type");
+    }
+}

@@ -5,9 +5,10 @@ import org.example.model.PrgState;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIHeap;
 import org.example.model.exp.Exp;
+import org.example.model.type.RefType;
+import org.example.model.type.Type;
 import org.example.model.value.RefValue;
 import org.example.model.value.Value;
-import org.example.model.type.RefType;
 
 public class WriteHeapStmt implements IStmt {
     private final String varName;
@@ -43,5 +44,16 @@ public class WriteHeapStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new WriteHeapStmt(varName, expr.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type varType = typeEnv.lookup(varName);
+        Type expType = expr.typecheck(typeEnv);
+        if (varType instanceof RefType) {
+            RefType ref = (RefType) varType;
+            if (ref.getInner().equals(expType)) return typeEnv;
+            else throw new MyException("WriteHeap: right hand side and left hand side have different types");
+        } else throw new MyException("WriteHeap: variable is not of RefType");
     }
 }

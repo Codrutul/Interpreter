@@ -3,7 +3,7 @@ package org.example.controller;
 import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIHeap;
-import org.example.model.stmt.IStmt;
+
 import org.example.model.value.RefValue;
 import org.example.model.value.Value;
 import org.example.repository.IRepository;
@@ -129,7 +129,6 @@ public class Controller {
                         .flatMap(p -> p.getSymTable().getContent().values().stream())
                         .collect(Collectors.toList());
 
-                // heap is shared; take any program's heap (if exists)
                 if (!repo.getPrgList().isEmpty()) {
                     MyIHeap<Integer, Value> heap = repo.getPrgList().get(0).getHeap();
                     heap.setContent(safeGarbageCollector(allSymVals, heap.getContent()));

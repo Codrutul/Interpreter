@@ -4,7 +4,9 @@ import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
+import org.example.model.type.Type;
 import org.example.model.value.Value;
 
 public class PrintStmt implements IStmt {
@@ -29,5 +31,11 @@ public class PrintStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new PrintStmt(exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        exp.typecheck(typeEnv);
+        return typeEnv;
     }
 }

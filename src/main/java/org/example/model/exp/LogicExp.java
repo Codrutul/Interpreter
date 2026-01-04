@@ -3,6 +3,8 @@ package org.example.model.exp;
 import org.example.exception.MyException;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIHeap;
+import org.example.model.type.BoolType;
+import org.example.model.type.Type;
 import org.example.model.value.BoolValue;
 import org.example.model.value.Value;
 
@@ -47,5 +49,16 @@ public class LogicExp implements Exp {
     @Override
     public Exp deepCopy() {
         return new LogicExp(op, e1.deepCopy(), e2.deepCopy());
+    }
+
+    @Override
+    public Type typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type t1 = e1.typecheck(typeEnv);
+        Type t2 = e2.typecheck(typeEnv);
+        if (t1.equals(new BoolType())) {
+            if (t2.equals(new BoolType())) {
+                return new BoolType();
+            } else throw new MyException("second operand is not a boolean");
+        } else throw new MyException("first operand is not a boolean");
     }
 }
