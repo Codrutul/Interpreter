@@ -7,6 +7,8 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
+import org.example.model.type.StringType;
+import org.example.model.type.Type;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -49,5 +51,12 @@ public class OpenRFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new OpenRFile(exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        Type t = exp.typecheck(typeEnv);
+        if (t.equals(new StringType())) return typeEnv;
+        else throw new MyException("OpenRFile: expression is not a string");
     }
 }

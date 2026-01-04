@@ -18,6 +18,8 @@ public class Controller {
 
     public Controller(IRepository repo) {
         this.repo = repo;
+        // create a persistent executor so GUI can call oneStepForAllPrg without NPE
+        this.executor = Executors.newFixedThreadPool(2);
     }
 
     private List<Integer> getAddrFromSymTable(Collection<Value> symTableValues) {
@@ -77,15 +79,12 @@ public class Controller {
         // prepare the list of callables
         List<Callable<PrgState>> callList = prgList.stream()
                 .map((PrgState p) -> (Callable<PrgState>) (() -> {
-                    try {
-                        return p.oneStep();
-                    } catch (MyException e) {
-                        throw new RuntimeException(e);
-                    }
+                    return p.oneStep();
                 }))
                 .collect(Collectors.toList());
 
         List<PrgState> newPrgList = new ArrayList<>();
+        boolean createdLocalExecutor = false;
         try {
             List<Future<PrgState>> futures = executor.invokeAll(callList);
             for (Future<PrgState> f : futures) {
@@ -95,12 +94,21 @@ public class Controller {
                 } catch (ExecutionException e) {
                     // unwrap and rethrow as MyException
                     Throwable cause = e.getCause();
+                    // unwrap nested exceptions to find underlying cause
+                    while (cause != null && !(cause instanceof MyException)) {
+                        cause = cause.getCause();
+                    }
                     if (cause instanceof MyException) throw (MyException) cause;
-                    else throw new MyException("Error during parallel execution: " + cause.getMessage());
+                    else throw new MyException("Error during parallel execution: " + e.getMessage());
                 }
             }
         } catch (InterruptedException e) {
             throw new MyException("Execution interrupted: " + e.getMessage());
+        } finally {
+            if (createdLocalExecutor && executor != null) {
+                executor.shutdownNow();
+                executor = null;
+            }
         }
 
         prgList.addAll(newPrgList);
@@ -118,7 +126,6 @@ public class Controller {
     }
 
     public void allStep() throws MyException {
-        executor = Executors.newFixedThreadPool(2);
         try {
             List<PrgState> prgList = removeCompletedPrg(repo.getPrgList());
             while (prgList.size() > 0) {
@@ -145,5 +152,12 @@ public class Controller {
 
     public IRepository getRepo() {
         return repo;
+    }
+
+    public void shutdown() {
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
     }
 }
