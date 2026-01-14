@@ -33,7 +33,6 @@ public class GUIRunner extends Application {
 
     @Override
     public void stop() throws Exception {
-        // attempt to shutdown controller executor(s)
         try {
             if (ui != null) {
                 Controller c = ui.getController();
