@@ -5,6 +5,7 @@ import org.example.model.PrgState;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIDictionary;
 import org.example.model.exp.Exp;
+import org.example.model.type.Type;
 import org.example.model.value.StringValue;
 import org.example.model.value.Value;
 
@@ -49,5 +50,10 @@ public class OpenRFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new OpenRFile(exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
+        return null;
     }
 }
