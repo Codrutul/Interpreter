@@ -34,10 +34,8 @@ public class GUIController {
     private final TableView<Map.Entry<String, Value>> symTableView;
     private final ListView<String> exeStackListView;
 
-    // example statements
     private final IStmt[] examples;
 
-    // runtime pieces
     private Controller controller;
     private IRepository repo;
 
@@ -173,7 +171,6 @@ public class GUIController {
         runOneStepButton.setOnAction(evt -> {
             if (controller == null) { showError("No program selected"); return; }
             try {
-                // run one step for all non-completed programs
                 List<PrgState> all = controller.getRepo().getPrgList();
                 List<PrgState> toRun = controller.removeCompletedPrg(all);
                 if (toRun.isEmpty()) {
@@ -189,7 +186,6 @@ public class GUIController {
 
     private void prepareRepoForExample(int idx) throws MyException {
         IStmt selected = examples[idx];
-        // create fresh program state
         MyIStack<org.example.model.stmt.IStmt> stk = new MyStack<>();
         MyIDictionary<String, Value> sym = new MyDictionary<>();
         MyIList<Value> out = new MyList<>();

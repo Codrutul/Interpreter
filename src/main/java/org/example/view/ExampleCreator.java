@@ -14,7 +14,7 @@ public class ExampleCreator {
     // Example 1: int v; v=2; Print(v)
     public static IStmt getExample1() {
         return new CompStmt(new VarDeclStmt("v", new IntType()),
-                new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(2))), new PrintStmt(new VarExp("v"))));
+                new CompStmt(new AssignStmt("v", new ValueExp(new BoolValue(false))), new PrintStmt(new VarExp("v"))));
     }
 
     // Example 2: int a; int b; a=2+3*5; b=a+1; Print(b)

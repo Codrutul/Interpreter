@@ -92,7 +92,6 @@ public class Controller {
                     PrgState np = f.get();
                     if (np != null) newPrgList.add(np);
                 } catch (ExecutionException e) {
-                    // unwrap and rethrow as MyException
                     Throwable cause = e.getCause();
                     // unwrap nested exceptions to find underlying cause
                     while (cause != null && !(cause instanceof MyException)) {
