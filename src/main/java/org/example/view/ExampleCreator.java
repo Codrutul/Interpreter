@@ -112,4 +112,52 @@ public class ExampleCreator {
                                         new CompStmt(forkStmt, after)))));
     }
 
+    // Example 9
+    public static IStmt getExample9() {
+        // int a; int b; int c; a=1;b=2;c=5;
+        // (switch(a*10) (case (b*c) : print(a);print(b)) (case (10) : print(100);print(200)) (default : print(300))); print(300)
+        IStmt decls = new CompStmt(new VarDeclStmt("a", new IntType()),
+                new CompStmt(new VarDeclStmt("b", new IntType()), new VarDeclStmt("c", new IntType())));
+        IStmt assigns = new CompStmt(new AssignStmt("a", new ValueExp(new IntValue(1))),
+                new CompStmt(new AssignStmt("b", new ValueExp(new IntValue(2))), new AssignStmt("c", new ValueExp(new IntValue(5)))));
+
+        // switch(a*10) cases
+        org.example.model.exp.Exp exp = new ArithExp(3, new VarExp("a"), new ValueExp(new IntValue(10))); // a*10
+        org.example.model.exp.Exp case1 = new ArithExp(3, new VarExp("b"), new VarExp("c")); // b*c
+        IStmt stmt1 = new CompStmt(new PrintStmt(new VarExp("a")), new PrintStmt(new VarExp("b")));
+        org.example.model.exp.Exp case2 = new ValueExp(new IntValue(10));
+        IStmt stmt2 = new CompStmt(new PrintStmt(new ValueExp(new IntValue(100))), new PrintStmt(new ValueExp(new IntValue(200))));
+        IStmt defaultS = new PrintStmt(new ValueExp(new IntValue(300)));
+
+        IStmt switchStmt = new SwitchStmt(exp, case1, stmt1, case2, stmt2, defaultS);
+
+        IStmt program = new CompStmt(decls, new CompStmt(assigns, new CompStmt(switchStmt, new PrintStmt(new ValueExp(new IntValue(300))))));
+        return program;
+    }
+
+    // Example 10
+    public static IStmt getExample10() {
+        // Ref int v1; int cnt; new(v1,1);createSemaphore(cnt,rH(v1));
+        // fork(acquire(cnt);wh(v1,rh(v1)*10);print(rh(v1));release(cnt));
+        // fork(acquire(cnt);wh(v1,rh(v1)*10);wh(v1,rh(v1)*2);print(rh(v1));release(cnt));
+        // acquire(cnt); print(rh(v1)-1); release(cnt)
+        IStmt decls = new CompStmt(new VarDeclStmt("v1", new RefType(new IntType())), new VarDeclStmt("cnt", new IntType()));
+        IStmt newv1 = new NewStmt("v1", new ValueExp(new IntValue(1)));
+        IStmt createSem = new CreateSemaphoreStmt("cnt", new ReadHeapExp(new VarExp("v1")));
+
+        // fork1 body
+        IStmt fork1 = new CompStmt(new AcquireStmt("cnt"), new CompStmt(new WriteHeapStmt("v1", new ArithExp(3, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(10)))),
+                new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v1"))), new ReleaseStmt("cnt"))));
+
+        // fork2 body
+        IStmt fork2 = new CompStmt(new AcquireStmt("cnt"), new CompStmt(new WriteHeapStmt("v1", new ArithExp(3, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(10)))),
+                new CompStmt(new WriteHeapStmt("v1", new ArithExp(3, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(2)))), new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v1"))), new ReleaseStmt("cnt")))));
+
+        IStmt forks = new CompStmt(new ForkStmt(fork1), new ForkStmt(fork2));
+        IStmt rest = new CompStmt(new AcquireStmt("cnt"), new CompStmt(new PrintStmt(new ArithExp(2, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(1)))), new ReleaseStmt("cnt")));
+
+        IStmt program = new CompStmt(decls, new CompStmt(newv1, new CompStmt(createSem, new CompStmt(forks, rest))));
+        return program;
+    }
+
 }

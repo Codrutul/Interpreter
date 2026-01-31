@@ -8,6 +8,7 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyISemaphore;
 import org.example.model.type.Type;
 import org.example.model.value.Value;
 
@@ -34,9 +35,10 @@ public class ForkStmt implements IStmt {
         MyIList<Value> out = state.getOut();
         MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
         MyIHeap<Integer, Value> heap = state.getHeap();
+        MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> sem = state.getSemaphoreTable();
 
         // create new PrgState (child thread)
-        return new PrgState(newStack, newSymTable, out, fileTable, heap, forkedStmt.deepCopy());
+        return new PrgState(newStack, newSymTable, out, fileTable, heap, forkedStmt.deepCopy(), sem);
     }
 
     @Override

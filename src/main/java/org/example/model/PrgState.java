@@ -6,6 +6,8 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIStack;
 import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyISemaphore;
+import org.example.model.adt.MySemaphore;
 import org.example.model.stmt.IStmt;
 import org.example.model.value.Value;
 
@@ -19,6 +21,8 @@ public class PrgState {
     private MyIHeap<Integer, Value> heap;
     private IStmt originalProgram; //optional field, but good to have
 
+    private MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> semaphoreTable;
+
     private final int id;
     private static int lastId = 0;
 
@@ -28,11 +32,17 @@ public class PrgState {
     }
 
     public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg) {
+        this(stk, symtbl, ot, fileTable, heap, prg, new MySemaphore());
+    }
+
+    // new constructor that allows sharing the semaphore table (used by Fork)
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg, MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> sem) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;
         this.fileTable = fileTable;
         this.heap = heap;
+        this.semaphoreTable = sem;
         originalProgram = prg.deepCopy(); //recreate the entire original prg
         stk.push(prg);
         this.id = generateId();
@@ -56,6 +66,8 @@ public class PrgState {
 
     public MyIHeap<Integer, Value> getHeap() { return heap; }
 
+    public MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> getSemaphoreTable() { return semaphoreTable; }
+
     public int getId() { return id; }
 
     public Boolean isNotCompleted() {
@@ -76,7 +88,8 @@ public class PrgState {
                 "Symbol Table: " + symTable.toString() + "\n" +
                 "Out: " + out.toString() + "\n" +
                 "FileTable: " + fileTable.toString() + "\n" +
-                "Heap: " + heap.toString() + "\n";
+                "Heap: " + heap.toString() + "\n" +
+                "SemaphoreTable: " + semaphoreTable.toString() + "\n";
     }
 
     public String toFileString() {
@@ -85,6 +98,7 @@ public class PrgState {
                 "SymTable:\n" + symTable.toFileString() +
                 "Out:\n" + out.toFileString() +
                 "FileTable:\n" + fileTable.toFileString() +
-                "Heap:\n" + heap.toString() + "\n";
+                "Heap:\n" + heap.toString() + "\n" +
+                "SemaphoreTable:\n" + semaphoreTable.toString() + "\n";
     }
 }

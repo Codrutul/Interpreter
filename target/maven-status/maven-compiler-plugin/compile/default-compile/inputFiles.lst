@@ -16,10 +16,14 @@ C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\Inter
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyIFileTable.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyIHeap.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyIList.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyISemaphore.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyIStack.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyList.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MySemaphore.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\MyStack.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\adt\SemaphoreEntry.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ArithExp.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\EqualExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\Exp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\LogicExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ReadHeapExp.java
@@ -27,9 +31,11 @@ C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\Inter
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ValueExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\VarExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\PrgState.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\AcquireStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\AssignStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\CloseRFile.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\CompStmt.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\CreateSemaphoreStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\ForkStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\IfStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\IStmt.java
@@ -38,6 +44,8 @@ C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\Inter
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\OpenRFile.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\PrintStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\ReadFile.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\ReleaseStmt.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\SwitchStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\VarDeclStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\WhileStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\WriteHeapStmt.java

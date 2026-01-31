@@ -28,10 +28,11 @@ public class GUIController {
     // main window controls
     private final TextField nrPrgStatesField;
     private final TableView<Map.Entry<Integer, Value>> heapTable;
+    private final TableView<Map.Entry<Integer, org.example.model.adt.SemaphoreEntry>> semaphoreTable;
     private final ListView<String> outListView;
     private final ListView<String> fileTableListView;
     private final ListView<String> prgIdsListView;
-    private final TableView<Map.Entry<String, Value>> symTableView;
+    private final TableView<javafx.util.Pair<String, String>> symTableView;
     private final ListView<String> exeStackListView;
 
     private final IStmt[] examples;
@@ -49,6 +50,7 @@ public class GUIController {
         nrPrgStatesField.setEditable(false);
 
         heapTable = new TableView<>();
+        semaphoreTable = new TableView<>();
         outListView = new ListView<>();
         fileTableListView = new ListView<>();
         prgIdsListView = new ListView<>();
@@ -98,6 +100,20 @@ public class GUIController {
         heapTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         heapTable.setPlaceholder(new Label("Heap is empty"));
 
+        // semaphore table
+        Label semLabel = new Label("Semaphore Table (index -> (value, list)):");
+        semaphoreTable.setPrefHeight(120);
+        semaphoreTable.setPrefWidth(400);
+        TableColumn<Map.Entry<Integer, org.example.model.adt.SemaphoreEntry>, String> semIndexCol = new TableColumn<>("Index");
+        semIndexCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getKey())));
+        TableColumn<Map.Entry<Integer, org.example.model.adt.SemaphoreEntry>, String> semValCol = new TableColumn<>("Value");
+        semValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue().getNr())));
+        TableColumn<Map.Entry<Integer, org.example.model.adt.SemaphoreEntry>, String> semListCol = new TableColumn<>("List");
+        semListCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue().getList())));
+        semaphoreTable.getColumns().addAll(semIndexCol, semValCol, semListCol);
+        semaphoreTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        semaphoreTable.setPlaceholder(new Label("Semaphore table is empty"));
+
         Label outLabel = new Label("Out:");
         outListView.setPrefHeight(80);
 
@@ -111,10 +127,10 @@ public class GUIController {
         symTableView.setPrefHeight(150);
         symTableView.setPrefWidth(300);
         // sym table columns
-        TableColumn<Map.Entry<String, Value>, String> symVarCol = new TableColumn<>("Var");
+        TableColumn<javafx.util.Pair<String, String>, String> symVarCol = new TableColumn<>("Var");
         symVarCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
-        TableColumn<Map.Entry<String, Value>, String> symValCol = new TableColumn<>("Value");
-        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        TableColumn<javafx.util.Pair<String, String>, String> symValCol = new TableColumn<>("Value");
+        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue()));
         symTableView.getColumns().addAll(symVarCol, symValCol);
         symTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         symTableView.setPlaceholder(new Label("Symbol table is empty"));
@@ -123,7 +139,7 @@ public class GUIController {
         exeStackListView.setPrefHeight(150);
 
         // assemble right side
-        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
+        right.getChildren().addAll(topRow, heapLabel, heapTable, semLabel, semaphoreTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
 
         SplitPane split = new SplitPane();
         split.getItems().addAll(left, right);
@@ -213,6 +229,15 @@ public class GUIController {
             heapTable.setItems(FXCollections.observableArrayList());
         }
 
+        // semaphore
+        if (!prgList.isEmpty()) {
+            Map<Integer, org.example.model.adt.SemaphoreEntry> sem = prgList.get(0).getSemaphoreTable().getContent();
+            ObservableList<Map.Entry<Integer, org.example.model.adt.SemaphoreEntry>> semEntries = FXCollections.observableArrayList(sem.entrySet());
+            semaphoreTable.setItems(semEntries);
+        } else {
+            semaphoreTable.setItems(FXCollections.observableArrayList());
+        }
+
         // out
         List<String> outList = prgList.stream()
                 .flatMap(p -> p.getOut().getList().stream())
@@ -253,7 +278,10 @@ public class GUIController {
 
         // sym table
         Map<String, Value> sym = p.getSymTable().getContent();
-        ObservableList<Map.Entry<String, Value>> symEntries = FXCollections.observableArrayList(sym.entrySet());
+        List<javafx.util.Pair<String, String>> list = sym.entrySet().stream()
+                .map(e -> new javafx.util.Pair<>(e.getKey(), String.valueOf(e.getValue())))
+                .collect(Collectors.toList());
+        ObservableList<javafx.util.Pair<String, String>> symEntries = FXCollections.observableArrayList(list);
         symTableView.setItems(symEntries);
 
         // exe stack: we want top element first
