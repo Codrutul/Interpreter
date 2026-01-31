@@ -6,6 +6,9 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIStack;
 import org.example.model.adt.MyIHeap;
+
+import org.example.model.adt.MyILockTable;
+import org.example.model.adt.MyLockTable;
 import org.example.model.stmt.IStmt;
 import org.example.model.value.Value;
 
@@ -19,6 +22,8 @@ public class PrgState {
     private MyIHeap<Integer, Value> heap;
     private IStmt originalProgram; //optional field, but good to have
 
+    private MyILockTable<Integer, Integer> lockTable;
+
     private final int id;
     private static int lastId = 0;
 
@@ -28,11 +33,17 @@ public class PrgState {
     }
 
     public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg) {
+        this(stk, symtbl, ot, fileTable, heap, prg, new MyLockTable());
+    }
+
+    // constructor that allows sharing the lock table (used by Fork)
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg, MyILockTable<Integer, Integer> lock) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;
         this.fileTable = fileTable;
         this.heap = heap;
+        this.lockTable = lock;
         originalProgram = prg.deepCopy(); //recreate the entire original prg
         stk.push(prg);
         this.id = generateId();
@@ -56,6 +67,8 @@ public class PrgState {
 
     public MyIHeap<Integer, Value> getHeap() { return heap; }
 
+    public MyILockTable<Integer, Integer> getLockTable() { return lockTable; }
+
     public int getId() { return id; }
 
     public Boolean isNotCompleted() {
@@ -76,7 +89,8 @@ public class PrgState {
                 "Symbol Table: " + symTable.toString() + "\n" +
                 "Out: " + out.toString() + "\n" +
                 "FileTable: " + fileTable.toString() + "\n" +
-                "Heap: " + heap.toString() + "\n";
+                "Heap: " + heap.toString() + "\n" +
+                "LockTable: " + lockTable.toString() + "\n";
     }
 
     public String toFileString() {
@@ -85,6 +99,7 @@ public class PrgState {
                 "SymTable:\n" + symTable.toFileString() +
                 "Out:\n" + out.toFileString() +
                 "FileTable:\n" + fileTable.toFileString() +
-                "Heap:\n" + heap.toString() + "\n";
+                "Heap:\n" + heap.toString() + "\n" +
+                "LockTable:\n" + lockTable.toString() + "\n";
     }
 }

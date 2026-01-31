@@ -8,6 +8,7 @@ import org.example.model.exp.Exp;
 import org.example.model.type.BoolType;
 import org.example.model.type.Type;
 import org.example.model.value.BoolValue;
+import org.example.model.value.IntValue;
 import org.example.model.value.Value;
 
 public class IfStmt implements IStmt {
@@ -29,12 +30,16 @@ public class IfStmt implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException {
         Value res = exp.eval(state.getSymTable(), state.getHeap());
-        if (!(res instanceof BoolValue)) {
-            throw new MyException("Conditional expression is not a boolean");
+        boolean cond;
+        if (res instanceof BoolValue) {
+            cond = ((BoolValue) res).getVal();
+        } else if (res instanceof IntValue) {
+            cond = ((IntValue) res).getVal() != 0;
+        } else {
+            throw new MyException("Conditional expression is not a boolean: value='" + res.toString() + "' (" + res.getClass().getSimpleName() + ")");
         }
-        BoolValue b = (BoolValue) res;
         MyIStack<IStmt> stk = state.getStk();
-        if (b.getVal()) stk.push(thenS);
+        if (cond) stk.push(thenS);
         else stk.push(elseS);
         return null;
     }

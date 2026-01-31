@@ -5,6 +5,7 @@ org\example\model\stmt\NewStmt.class
 org\example\model\adt\MyIStack.class
 org\example\model\adt\MyIList.class
 org\example\gui\GUIController.class
+org\example\model\adt\MyILockTable.class
 org\example\model\type\IntType.class
 org\example\gui\MainApp.class
 org\example\exception\StackException.class
@@ -17,6 +18,7 @@ org\example\repository\IRepository.class
 org\example\exception\VariableNotDefinedException.class
 org\example\model\type\BoolType.class
 org\example\view\RunExample.class
+org\example\model\adt\MyLockTable.class
 org\example\model\value\IntValue.class
 org\example\model\value\StringValue.class
 org\example\model\stmt\CompStmt.class
@@ -24,6 +26,7 @@ org\example\model\exp\VarExp.class
 org\example\model\adt\MyIDictionary.class
 org\example\model\stmt\AssignStmt.class
 org\example\model\stmt\IStmt.class
+org\example\model\stmt\LockStmt.class
 org\example\model\adt\MyDictionary.class
 org\example\exception\DivisionByZeroException.class
 org\example\model\exp\LogicExp.class
@@ -32,6 +35,7 @@ org\example\model\exp\ReadHeapExp.class
 org\example\model\stmt\PrintStmt.class
 org\example\model\stmt\NopStmt.class
 org\example\model\stmt\ForkStmt.class
+org\example\model\stmt\NewLockStmt.class
 org\example\model\stmt\OpenRFile.class
 org\example\model\stmt\IfStmt.class
 org\example\model\stmt\WhileStmt.class
@@ -53,9 +57,11 @@ org\example\view\Interpreter.class
 org\example\gui\GUIRunner.class
 org\example\model\adt\MyIHeap.class
 org\example\model\PrgState.class
+org\example\model\stmt\ForStmt.class
 org\example\exception\DictionaryException.class
 org\example\model\adt\MyHeap.class
 org\example\model\adt\MyIFileTable.class
 org\example\model\exp\ArithExp.class
+org\example\model\stmt\UnlockStmt.class
 org\example\model\type\StringType.class
 org\example\view\ExitCommand.class

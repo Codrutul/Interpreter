@@ -8,6 +8,7 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIFileTable;
 import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyILockTable;
 import org.example.model.type.Type;
 import org.example.model.value.Value;
 
@@ -34,9 +35,10 @@ public class ForkStmt implements IStmt {
         MyIList<Value> out = state.getOut();
         MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
         MyIHeap<Integer, Value> heap = state.getHeap();
+        MyILockTable<Integer, Integer> lock = state.getLockTable();
 
-        // create new PrgState (child thread)
-        return new PrgState(newStack, newSymTable, out, fileTable, heap, forkedStmt.deepCopy());
+        // create new PrgState (child thread) -- share lock table
+        return new PrgState(newStack, newSymTable, out, fileTable, heap, forkedStmt.deepCopy(), lock);
     }
 
     @Override

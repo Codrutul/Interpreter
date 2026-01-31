@@ -112,4 +112,39 @@ public class ExampleCreator {
                                         new CompStmt(forkStmt, after)))));
     }
 
+    // New Example 9: For statement example from the assignment
+    public static IStmt getExample9() {
+        // Ref int a; new(a,20); (for(v=0;v<3;v=v+1) fork(print(v);v=v*rh(a))); print(rh(a))
+        IStmt declA = new VarDeclStmt("a", new RefType(new IntType()));
+        IStmt newA = new NewStmt("a", new ValueExp(new IntValue(20)));
+        IStmt forBody = new ForkStmt(new CompStmt(new PrintStmt(new VarExp("v")), new AssignStmt("v", new ArithExp(3, new VarExp("v"), new ReadHeapExp(new VarExp("a"))))));
+        IStmt forStmt = new ForStmt("v", new ValueExp(new IntValue(0)), new ValueExp(new IntValue(3)), new ArithExp(1, new VarExp("v"), new ValueExp(new IntValue(1))), forBody);
+        IStmt printA = new PrintStmt(new ReadHeapExp(new VarExp("a")));
+        return new CompStmt(declA, new CompStmt(newA, new CompStmt(forStmt, printA)));
+    }
+
+    // New Example 10: Locks example from the assignment
+    public static IStmt getExample10() {
+        // Ref int v1; Ref int v2; int x; int q; new(v1,20);new(v2,30);newLock(x); fork( fork( lock(x);wh(v1,rh(v1)-1);unlock(x) ); lock(x);wh(v1,rh(v1)*10);unlock(x) );newLock(q); fork( fork(lock(q);wh(v2,rh(v2)+5);unlock(q)); lock(q);wh(v2,rh(v2)*10);unlock(q) );nop;nop;nop;nop; lock(x); print(rh(v1)); unlock(x); lock(q); print(rh(v2)); unlock(q);
+        IStmt decls = new CompStmt(new VarDeclStmt("v1", new RefType(new IntType())), new CompStmt(new VarDeclStmt("v2", new RefType(new IntType())), new CompStmt(new VarDeclStmt("x", new IntType()), new VarDeclStmt("q", new IntType()))));
+        IStmt newv1 = new NewStmt("v1", new ValueExp(new IntValue(20)));
+        IStmt newv2 = new NewStmt("v2", new ValueExp(new IntValue(30)));
+        IStmt newLockX = new NewLockStmt("x");
+
+        IStmt innerFork1 = new CompStmt(new LockStmt("x"), new CompStmt(new WriteHeapStmt("v1", new ArithExp(2, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(1)))), new UnlockStmt("x")));
+        IStmt fork1 = new ForkStmt(innerFork1);
+        IStmt outerFork1 = new ForkStmt(new CompStmt(new LockStmt("x"), new CompStmt(new WriteHeapStmt("v1", new ArithExp(3, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(10)))), new UnlockStmt("x"))));
+
+        IStmt newLockQ = new NewLockStmt("q");
+        IStmt innerFork2 = new CompStmt(new LockStmt("q"), new CompStmt(new WriteHeapStmt("v2", new ArithExp(1, new ReadHeapExp(new VarExp("v2")), new ValueExp(new IntValue(5)))), new UnlockStmt("q")));
+        IStmt fork2 = new ForkStmt(new ForkStmt(innerFork2));
+        IStmt outerFork2 = new ForkStmt(new CompStmt(new LockStmt("q"), new CompStmt(new WriteHeapStmt("v2", new ArithExp(3, new ReadHeapExp(new VarExp("v2")), new ValueExp(new IntValue(10)))), new UnlockStmt("q"))));
+
+        IStmt nop4 = new CompStmt(new NopStmt(), new CompStmt(new NopStmt(), new CompStmt(new NopStmt(), new NopStmt())));
+        IStmt finalPart = new CompStmt(new LockStmt("x"), new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v1"))), new CompStmt(new UnlockStmt("x"), new CompStmt(new LockStmt("q"), new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v2"))), new UnlockStmt("q"))))));
+
+        IStmt program = new CompStmt(decls, new CompStmt(newv1, new CompStmt(newv2, new CompStmt(newLockX, new CompStmt(new ForkStmt(new ForkStmt(innerFork1)), new CompStmt(outerFork1, new CompStmt(newLockQ, new CompStmt(new ForkStmt(new ForkStmt(innerFork2)), new CompStmt(outerFork2, new CompStmt(nop4, finalPart))))))))));
+        return program;
+    }
+
 }

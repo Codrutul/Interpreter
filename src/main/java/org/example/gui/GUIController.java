@@ -31,8 +31,9 @@ public class GUIController {
     private final ListView<String> outListView;
     private final ListView<String> fileTableListView;
     private final ListView<String> prgIdsListView;
-    private final TableView<Map.Entry<String, Value>> symTableView;
+    private final TableView<javafx.util.Pair<String, String>> symTableView;
     private final ListView<String> exeStackListView;
+    private final TableView<Map.Entry<Integer, Integer>> lockTableView;
 
     private final IStmt[] examples;
 
@@ -54,6 +55,7 @@ public class GUIController {
         prgIdsListView = new ListView<>();
         symTableView = new TableView<>();
         exeStackListView = new ListView<>();
+        lockTableView = new TableView<>();
 
         buildUI();
         populatePrograms();
@@ -111,10 +113,10 @@ public class GUIController {
         symTableView.setPrefHeight(150);
         symTableView.setPrefWidth(300);
         // sym table columns
-        TableColumn<Map.Entry<String, Value>, String> symVarCol = new TableColumn<>("Var");
+        TableColumn<javafx.util.Pair<String, String>, String> symVarCol = new TableColumn<>("Var");
         symVarCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
-        TableColumn<Map.Entry<String, Value>, String> symValCol = new TableColumn<>("Value");
-        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        TableColumn<javafx.util.Pair<String, String>, String> symValCol = new TableColumn<>("Value");
+        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue()));
         symTableView.getColumns().addAll(symVarCol, symValCol);
         symTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         symTableView.setPlaceholder(new Label("Symbol table is empty"));
@@ -122,8 +124,19 @@ public class GUIController {
         Label exeLabel = new Label("ExeStack:");
         exeStackListView.setPrefHeight(150);
 
+        Label lockLabel = new Label("Lock Table (loc -> val):");
+        lockTableView.setPrefHeight(100);
+        lockTableView.setPrefWidth(400);
+        TableColumn<Map.Entry<Integer, Integer>, String> lockIndexCol = new TableColumn<>("Location");
+        lockIndexCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getKey())));
+        TableColumn<Map.Entry<Integer, Integer>, String> lockValCol = new TableColumn<>("Value");
+        lockValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        lockTableView.getColumns().addAll(lockIndexCol, lockValCol);
+        lockTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        lockTableView.setPlaceholder(new Label("Lock table is empty"));
+
         // assemble right side
-        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
+        right.getChildren().addAll(topRow, heapLabel, heapTable, lockLabel, lockTableView, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
 
         SplitPane split = new SplitPane();
         split.getItems().addAll(left, right);
@@ -253,7 +266,10 @@ public class GUIController {
 
         // sym table
         Map<String, Value> sym = p.getSymTable().getContent();
-        ObservableList<Map.Entry<String, Value>> symEntries = FXCollections.observableArrayList(sym.entrySet());
+        List<javafx.util.Pair<String, String>> list = sym.entrySet().stream()
+                .map(e -> new javafx.util.Pair<>(e.getKey(), String.valueOf(e.getValue())))
+                .collect(Collectors.toList());
+        ObservableList<javafx.util.Pair<String, String>> symEntries = FXCollections.observableArrayList(list);
         symTableView.setItems(symEntries);
 
         // exe stack: we want top element first

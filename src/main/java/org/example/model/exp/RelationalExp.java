@@ -6,6 +6,7 @@ import org.example.model.adt.MyIHeap;
 import org.example.model.type.BoolType;
 import org.example.model.type.IntType;
 import org.example.model.type.Type;
+import org.example.model.value.BoolValue;
 import org.example.model.value.IntValue;
 import org.example.model.value.Value;
 
@@ -29,12 +30,12 @@ public class RelationalExp implements Exp {
         int n1 = ((IntValue) v1).getVal();
         int n2 = ((IntValue) v2).getVal();
         switch (op) {
-            case "<": return new IntValue(n1 < n2 ? 1 : 0);
-            case "<=": return new IntValue(n1 <= n2 ? 1 : 0);
-            case ">": return new IntValue(n1 > n2 ? 1 : 0);
-            case ">=": return new IntValue(n1 >= n2 ? 1 : 0);
-            case "==": return new IntValue(n1 == n2 ? 1 : 0);
-            case "!=": return new IntValue(n1 != n2 ? 1 : 0);
+            case "<": return new BoolValue(n1 < n2);
+            case "<=": return new BoolValue(n1 <= n2);
+            case ">": return new BoolValue(n1 > n2);
+            case ">=": return new BoolValue(n1 >= n2);
+            case "==": return new BoolValue(n1 == n2);
+            case "!=": return new BoolValue(n1 != n2);
             default: throw new MyException("Unknown relational operator " + op);
         }
     }
