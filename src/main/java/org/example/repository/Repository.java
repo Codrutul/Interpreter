@@ -18,6 +18,12 @@ public class Repository implements IRepository {
         this.prgStateList = new ArrayList<>();
         this.prgStateList.add(prgState);
         this.logFilePath = logFilePath;
+        // Clear the log file at the start
+        try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath)))) {
+            // just opening it in write mode clears it
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     @Override

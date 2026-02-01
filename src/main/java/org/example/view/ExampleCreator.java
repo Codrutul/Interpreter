@@ -112,4 +112,69 @@ public class ExampleCreator {
                                         new CompStmt(forkStmt, after)))));
     }
 
+    // Example 9: CountDownLatch
+    // new(v1,2);new(v2,3);new(v3,4);newLatch(cnt,rH(v2));
+    // fork(wh(v1,rh(v1)*10));print(rh(v1));countDown(cnt);
+    // fork(wh(v2,rh(v2)*10));print(rh(v2));countDown(cnt);
+    // fork(wh(v3,rh(v3)*10));print(rh(v3));countDown(cnt))));
+    // await(cnt);
+    // print(100);
+    // countDown(cnt);
+    // print(100)
+    public static IStmt getExample9() {
+        return new CompStmt(new VarDeclStmt("v1", new RefType(new IntType())),
+            new CompStmt(new VarDeclStmt("v2", new RefType(new IntType())),
+            new CompStmt(new VarDeclStmt("v3", new RefType(new IntType())),
+            new CompStmt(new VarDeclStmt("cnt", new IntType()),
+            new CompStmt(new NewStmt("v1", new ValueExp(new IntValue(2))),
+            new CompStmt(new NewStmt("v2", new ValueExp(new IntValue(3))),
+            new CompStmt(new NewStmt("v3", new ValueExp(new IntValue(4))),
+            new CompStmt(new NewLatchStmt("cnt", new ReadHeapExp(new VarExp("v2"))),
+            new CompStmt(new ForkStmt(
+                new CompStmt(new WriteHeapStmt("v1", new ArithExp(3, new ReadHeapExp(new VarExp("v1")), new ValueExp(new IntValue(10)))),
+                new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v1"))),
+                new CountDownStmt("cnt")))
+            ),
+            new CompStmt(new ForkStmt(
+                new CompStmt(new WriteHeapStmt("v2", new ArithExp(3, new ReadHeapExp(new VarExp("v2")), new ValueExp(new IntValue(10)))),
+                new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v2"))),
+                new CountDownStmt("cnt")))
+            ),
+            new CompStmt(new ForkStmt(
+                new CompStmt(new WriteHeapStmt("v3", new ArithExp(3, new ReadHeapExp(new VarExp("v3")), new ValueExp(new IntValue(10)))),
+                new CompStmt(new PrintStmt(new ReadHeapExp(new VarExp("v3"))),
+                new CountDownStmt("cnt")))
+            ),
+            new CompStmt(new AwaitStmt("cnt"),
+            new CompStmt(new PrintStmt(new ValueExp(new IntValue(100))),
+            new CompStmt(new CountDownStmt("cnt"),
+            new PrintStmt(new ValueExp(new IntValue(100)))))))))))))))));
+    }
+
+    // Example 10: Repeat...Until
+    // v=0;
+    // (repeat (fork(print(v);v=v-1);v=v+1) until v==3);
+    // x=1;y=2;z=3;w=4;
+    // print(v*10)
+    public static IStmt getExample10() {
+        return new CompStmt(new VarDeclStmt("v", new IntType()),
+            new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(0))),
+            new CompStmt(new RepeatUntilStmt(
+                new CompStmt(new ForkStmt(
+                    new CompStmt(new PrintStmt(new VarExp("v")),
+                    new AssignStmt("v", new ArithExp(2, new VarExp("v"), new ValueExp(new IntValue(1)))))
+                ),
+                new AssignStmt("v", new ArithExp(1, new VarExp("v"), new ValueExp(new IntValue(1))))),
+                new RelationalExp("==", new VarExp("v"), new ValueExp(new IntValue(3)))
+            ),
+            new CompStmt(new VarDeclStmt("x", new IntType()),
+            new CompStmt(new AssignStmt("x", new ValueExp(new IntValue(1))),
+            new CompStmt(new VarDeclStmt("y", new IntType()),
+            new CompStmt(new AssignStmt("y", new ValueExp(new IntValue(2))),
+            new CompStmt(new VarDeclStmt("z", new IntType()),
+            new CompStmt(new AssignStmt("z", new ValueExp(new IntValue(3))),
+            new CompStmt(new VarDeclStmt("w", new IntType()),
+            new CompStmt(new AssignStmt("w", new ValueExp(new IntValue(4))),
+            new PrintStmt(new ArithExp(3, new VarExp("v"), new ValueExp(new IntValue(10)))))))))))))));
+    }
 }

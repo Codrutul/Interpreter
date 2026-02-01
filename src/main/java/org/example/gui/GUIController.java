@@ -33,6 +33,7 @@ public class GUIController {
     private final ListView<String> prgIdsListView;
     private final TableView<Map.Entry<String, Value>> symTableView;
     private final ListView<String> exeStackListView;
+    private final TableView<Map.Entry<Integer, Integer>> latchTableView;
 
     private final IStmt[] examples;
 
@@ -54,6 +55,7 @@ public class GUIController {
         prgIdsListView = new ListView<>();
         symTableView = new TableView<>();
         exeStackListView = new ListView<>();
+        latchTableView = new TableView<>();
 
         buildUI();
         populatePrograms();
@@ -114,7 +116,7 @@ public class GUIController {
         TableColumn<Map.Entry<String, Value>, String> symVarCol = new TableColumn<>("Var");
         symVarCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
         TableColumn<Map.Entry<String, Value>, String> symValCol = new TableColumn<>("Value");
-        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue().toString()));
         symTableView.getColumns().addAll(symVarCol, symValCol);
         symTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         symTableView.setPlaceholder(new Label("Symbol table is empty"));
@@ -122,8 +124,19 @@ public class GUIController {
         Label exeLabel = new Label("ExeStack:");
         exeStackListView.setPrefHeight(150);
 
+        Label latchLabel = new Label("LatchTable (location -> value):");
+        latchTableView.setPrefHeight(150);
+        latchTableView.setPrefWidth(300);
+        TableColumn<Map.Entry<Integer, Integer>, String> latchLocCol = new TableColumn<>("Location");
+        latchLocCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getKey())));
+        TableColumn<Map.Entry<Integer, Integer>, String> latchValCol = new TableColumn<>("Value");
+        latchValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        latchTableView.getColumns().addAll(latchLocCol, latchValCol);
+        latchTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        latchTableView.setPlaceholder(new Label("Latch table is empty"));
+
         // assemble right side
-        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
+        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView, latchLabel, latchTableView);
 
         SplitPane split = new SplitPane();
         split.getItems().addAll(left, right);
@@ -186,13 +199,20 @@ public class GUIController {
 
     private void prepareRepoForExample(int idx) throws MyException {
         IStmt selected = examples[idx];
+        try {
+            selected.typecheck(new MyDictionary<>());
+        } catch (MyException e) {
+            showError("Typecheck error: " + e.getMessage());
+            return;
+        }
         MyIStack<org.example.model.stmt.IStmt> stk = new MyStack<>();
         MyIDictionary<String, Value> sym = new MyDictionary<>();
         MyIList<Value> out = new MyList<>();
         MyIFileTable<String, BufferedReader> ft = new MyFileTable<>();
         MyIHeap<Integer, Value> heap = new MyHeap();
+        MyILatchTable latchTable = new MyLatchTable();
 
-        PrgState prg = new PrgState(stk, sym, out, ft, heap, selected);
+        PrgState prg = new PrgState(stk, sym, out, ft, heap, latchTable, selected);
         repo = new Repository(prg, "log.txt");
         controller = new Controller(repo);
     }
@@ -209,8 +229,13 @@ public class GUIController {
             Map<Integer, Value> heap = prgList.get(0).getHeap().getContent();
             ObservableList<Map.Entry<Integer, Value>> heapEntries = FXCollections.observableArrayList(heap.entrySet());
             heapTable.setItems(heapEntries);
+            
+            Map<Integer, Integer> latch = prgList.get(0).getLatchTable().getContent();
+            ObservableList<Map.Entry<Integer, Integer>> latchEntries = FXCollections.observableArrayList(latch.entrySet());
+            latchTableView.setItems(latchEntries);
         } else {
             heapTable.setItems(FXCollections.observableArrayList());
+            latchTableView.setItems(FXCollections.observableArrayList());
         }
 
         // out
@@ -255,6 +280,7 @@ public class GUIController {
         Map<String, Value> sym = p.getSymTable().getContent();
         ObservableList<Map.Entry<String, Value>> symEntries = FXCollections.observableArrayList(sym.entrySet());
         symTableView.setItems(symEntries);
+        symTableView.refresh(); // Force refresh to ensure updates are visible
 
         // exe stack: we want top element first
         List<String> elems = Arrays.stream(p.getStk().toFileString().split("\n"))

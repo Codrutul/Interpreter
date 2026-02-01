@@ -122,6 +122,16 @@ public class Controller {
 
         // update repository
         repo.setPrgList(prgList);
+        
+        // garbage collect: gather all symbol table values from all programs
+        List<Value> allSymVals = repo.getPrgList().stream()
+                .flatMap(p -> p.getSymTable().getContent().values().stream())
+                .collect(Collectors.toList());
+
+        if (!repo.getPrgList().isEmpty()) {
+            MyIHeap<Integer, Value> heap = repo.getPrgList().get(0).getHeap();
+            heap.setContent(safeGarbageCollector(allSymVals, heap.getContent()));
+        }
     }
 
     public void allStep() throws MyException {
@@ -129,17 +139,6 @@ public class Controller {
             List<PrgState> prgList = removeCompletedPrg(repo.getPrgList());
             while (prgList.size() > 0) {
                 oneStepForAllPrg(prgList);
-
-                // garbage collect: gather all symbol table values from all programs
-                List<Value> allSymVals = repo.getPrgList().stream()
-                        .flatMap(p -> p.getSymTable().getContent().values().stream())
-                        .collect(Collectors.toList());
-
-                if (!repo.getPrgList().isEmpty()) {
-                    MyIHeap<Integer, Value> heap = repo.getPrgList().get(0).getHeap();
-                    heap.setContent(safeGarbageCollector(allSymVals, heap.getContent()));
-                }
-
                 prgList = removeCompletedPrg(repo.getPrgList());
             }
         } finally {
