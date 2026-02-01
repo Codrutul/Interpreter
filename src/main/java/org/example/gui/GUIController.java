@@ -15,6 +15,7 @@ import org.example.model.stmt.IStmt;
 import org.example.model.value.Value;
 import org.example.repository.IRepository;
 import org.example.repository.Repository;
+import javafx.util.Pair;
 
 import java.io.BufferedReader;
 import java.util.*;
@@ -31,7 +32,7 @@ public class GUIController {
     private final ListView<String> outListView;
     private final ListView<String> fileTableListView;
     private final ListView<String> prgIdsListView;
-    private final TableView<Map.Entry<String, Value>> symTableView;
+    private final TableView<Pair<String, String>> symTableView;
     private final ListView<String> exeStackListView;
 
     private final IStmt[] examples;
@@ -111,10 +112,10 @@ public class GUIController {
         symTableView.setPrefHeight(150);
         symTableView.setPrefWidth(300);
         // sym table columns
-        TableColumn<Map.Entry<String, Value>, String> symVarCol = new TableColumn<>("Var");
+        TableColumn<Pair<String, String>, String> symVarCol = new TableColumn<>("Var");
         symVarCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
-        TableColumn<Map.Entry<String, Value>, String> symValCol = new TableColumn<>("Value");
-        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        TableColumn<Pair<String, String>, String> symValCol = new TableColumn<>("Value");
+        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue()));
         symTableView.getColumns().addAll(symVarCol, symValCol);
         symTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         symTableView.setPlaceholder(new Label("Symbol table is empty"));
@@ -251,9 +252,12 @@ public class GUIController {
         if (!opt.isPresent()) return;
         PrgState p = opt.get();
 
-        // sym table
+        // sym table: create a snapshot of string pairs to avoid TableView update issues
         Map<String, Value> sym = p.getSymTable().getContent();
-        ObservableList<Map.Entry<String, Value>> symEntries = FXCollections.observableArrayList(sym.entrySet());
+        List<Pair<String, String>> pairs = sym.entrySet().stream()
+                .map(e -> new Pair<>(e.getKey(), String.valueOf(e.getValue())))
+                .collect(Collectors.toList());
+        ObservableList<Pair<String, String>> symEntries = FXCollections.observableArrayList(pairs);
         symTableView.setItems(symEntries);
 
         // exe stack: we want top element first

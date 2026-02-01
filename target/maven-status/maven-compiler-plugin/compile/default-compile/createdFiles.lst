@@ -30,6 +30,7 @@ org\example\model\exp\LogicExp.class
 org\example\model\type\RefType.class
 org\example\model\exp\ReadHeapExp.class
 org\example\model\stmt\PrintStmt.class
+org\example\model\exp\MulExp.class
 org\example\model\stmt\NopStmt.class
 org\example\model\stmt\ForkStmt.class
 org\example\model\stmt\OpenRFile.class
@@ -39,6 +40,7 @@ org\example\model\value\Value.class
 org\example\model\exp\ValueExp.class
 org\example\repository\Repository.class
 org\example\model\adt\MyStack.class
+org\example\model\stmt\WaitStmt.class
 org\example\exception\EmptyStackException.class
 org\example\model\stmt\ReadFile.class
 org\example\view\ExampleCreator.class

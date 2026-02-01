@@ -21,7 +21,9 @@ public class GUIRunner extends Application {
                 ExampleCreator.getExample5(),
                 ExampleCreator.getExample6(),
                 ExampleCreator.getExample7(),
-                ExampleCreator.getExample8()
+                ExampleCreator.getExample8(),
+                ExampleCreator.getProblem1(),
+                ExampleCreator.getProblem2()
         };
 
         ui = new GUIController(examples);

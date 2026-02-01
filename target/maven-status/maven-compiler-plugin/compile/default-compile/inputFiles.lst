@@ -22,6 +22,7 @@ C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\Inter
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ArithExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\Exp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\LogicExp.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\MulExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ReadHeapExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\RelationalExp.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\exp\ValueExp.java
@@ -39,6 +40,7 @@ C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\Inter
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\PrintStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\ReadFile.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\VarDeclStmt.java
+C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\WaitStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\WhileStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\stmt\WriteHeapStmt.java
 C:\Users\afloa\OneDrive\Desktop\facultate\web development\template web jsp\InterpreterV3\Interpreter\src\main\java\org\example\model\type\BoolType.java

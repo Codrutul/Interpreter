@@ -114,6 +114,30 @@ public class Interpreter {
             System.out.println("Example 8 typecheck error: " + e.getMessage());
         }
 
+        // Problem 1 (option 9)
+        IStmt ex9 = ExampleCreator.getProblem1();
+        try {
+            ex9.typecheck(new MyDictionary<>());
+            PrgState prg9 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), new MyHeap(), ex9);
+            IRepository repo9 = new Repository(prg9, filename);
+            Controller ctr9 = new Controller(repo9);
+            menu.addCommand(new RunExample("9", ex9.toString(), ctr9));
+        } catch (MyException e) {
+            System.out.println("Problem1 typecheck error: " + e.getMessage());
+        }
+
+        // Problem 2 (option 10)
+        IStmt ex10 = ExampleCreator.getProblem2();
+        try {
+            ex10.typecheck(new MyDictionary<>());
+            PrgState prg10 = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new MyFileTable<>(), new MyHeap(), ex10);
+            IRepository repo10 = new Repository(prg10, filename);
+            Controller ctr10 = new Controller(repo10);
+            menu.addCommand(new RunExample("10", ex10.toString(), ctr10));
+        } catch (MyException e) {
+            System.out.println("Problem2 typecheck error: " + e.getMessage());
+        }
+
         menu.show();
     }
 }
