@@ -6,6 +6,7 @@ import org.example.model.adt.MyIDictionary;
 import org.example.model.adt.MyIList;
 import org.example.model.adt.MyIStack;
 import org.example.model.adt.MyIHeap;
+import org.example.model.adt.MyILatchTable;
 import org.example.model.stmt.IStmt;
 import org.example.model.value.Value;
 
@@ -17,6 +18,7 @@ public class PrgState {
     private MyIList<Value> out;
     private MyIFileTable<String, BufferedReader> fileTable;
     private MyIHeap<Integer, Value> heap;
+    private MyILatchTable latchTable;
     private IStmt originalProgram; //optional field, but good to have
 
     private final int id;
@@ -27,12 +29,13 @@ public class PrgState {
         return lastId;
     }
 
-    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg) {
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, MyILatchTable latchTable, IStmt prg) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;
         this.fileTable = fileTable;
         this.heap = heap;
+        this.latchTable = latchTable;
         originalProgram = prg.deepCopy(); //recreate the entire original prg
         stk.push(prg);
         this.id = generateId();
@@ -56,6 +59,8 @@ public class PrgState {
 
     public MyIHeap<Integer, Value> getHeap() { return heap; }
 
+    public MyILatchTable getLatchTable() { return latchTable; }
+
     public int getId() { return id; }
 
     public Boolean isNotCompleted() {
@@ -76,7 +81,8 @@ public class PrgState {
                 "Symbol Table: " + symTable.toString() + "\n" +
                 "Out: " + out.toString() + "\n" +
                 "FileTable: " + fileTable.toString() + "\n" +
-                "Heap: " + heap.toString() + "\n";
+                "Heap: " + heap.toString() + "\n" +
+                "LatchTable: " + latchTable.toString() + "\n";
     }
 
     public String toFileString() {
@@ -85,6 +91,7 @@ public class PrgState {
                 "SymTable:\n" + symTable.toFileString() +
                 "Out:\n" + out.toFileString() +
                 "FileTable:\n" + fileTable.toFileString() +
-                "Heap:\n" + heap.toString() + "\n";
+                "Heap:\n" + heap.toString() + "\n" +
+                "LatchTable:\n" + latchTable.toString() + "\n";
     }
 }
