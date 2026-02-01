@@ -31,7 +31,8 @@ public class GUIController {
     private final ListView<String> outListView;
     private final ListView<String> fileTableListView;
     private final ListView<String> prgIdsListView;
-    private final TableView<Map.Entry<String, Value>> symTableView;
+    private final TableView<javafx.util.Pair<String, String>> symTableView;
+    private final TableView<javafx.util.Pair<String, String>> procTableView;
     private final ListView<String> exeStackListView;
 
     private final IStmt[] examples;
@@ -53,6 +54,7 @@ public class GUIController {
         fileTableListView = new ListView<>();
         prgIdsListView = new ListView<>();
         symTableView = new TableView<>();
+        procTableView = new TableView<>();
         exeStackListView = new ListView<>();
 
         buildUI();
@@ -111,19 +113,30 @@ public class GUIController {
         symTableView.setPrefHeight(150);
         symTableView.setPrefWidth(300);
         // sym table columns
-        TableColumn<Map.Entry<String, Value>, String> symVarCol = new TableColumn<>("Var");
+        TableColumn<javafx.util.Pair<String, String>, String> symVarCol = new TableColumn<>("Var");
         symVarCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
-        TableColumn<Map.Entry<String, Value>, String> symValCol = new TableColumn<>("Value");
-        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        TableColumn<javafx.util.Pair<String, String>, String> symValCol = new TableColumn<>("Value");
+        symValCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue()));
         symTableView.getColumns().addAll(symVarCol, symValCol);
         symTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         symTableView.setPlaceholder(new Label("Symbol table is empty"));
+
+        Label procLabel = new Label("ProcTable (name(params) -> body):");
+        procTableView.setPrefHeight(150);
+        procTableView.setPrefWidth(400);
+        TableColumn<javafx.util.Pair<String, String>, String> procNameCol = new TableColumn<>("Proc");
+        procNameCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
+        TableColumn<javafx.util.Pair<String, String>, String> procBodyCol = new TableColumn<>("Body");
+        procBodyCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getValue()));
+        procTableView.getColumns().addAll(procNameCol, procBodyCol);
+        procTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        procTableView.setPlaceholder(new Label("ProcTable is empty"));
 
         Label exeLabel = new Label("ExeStack:");
         exeStackListView.setPrefHeight(150);
 
         // assemble right side
-        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, exeLabel, exeStackListView);
+        right.getChildren().addAll(topRow, heapLabel, heapTable, outLabel, outListView, fileLabel, fileTableListView, idsLabel, prgIdsListView, symLabel, symTableView, procLabel, procTableView, exeLabel, exeStackListView);
 
         SplitPane split = new SplitPane();
         split.getItems().addAll(left, right);
@@ -192,9 +205,26 @@ public class GUIController {
         MyIFileTable<String, BufferedReader> ft = new MyFileTable<>();
         MyIHeap<Integer, Value> heap = new MyHeap();
 
-        PrgState prg = new PrgState(stk, sym, out, ft, heap, selected);
-        repo = new Repository(prg, "log.txt");
-        controller = new Controller(repo);
+        // create and populate a proc table (empty by default)
+        org.example.model.adt.MyProcTable pt = org.example.model.adt.MyProcTable.getShared();
+        try {
+            if (!pt.isDefined("sum")) {
+                org.example.model.adt.Procedure sumProc = new org.example.model.adt.Procedure(java.util.Arrays.asList("a","b"),
+                        new org.example.model.stmt.CompStmt(new org.example.model.stmt.VarDeclStmt("v", new org.example.model.type.IntType()),
+                                new org.example.model.stmt.CompStmt(new org.example.model.stmt.AssignStmt("v", new org.example.model.exp.ArithExp(1, new org.example.model.exp.VarExp("a"), new org.example.model.exp.VarExp("b"))), new org.example.model.stmt.PrintStmt(new org.example.model.exp.VarExp("v")))));
+                pt.add("sum", sumProc);
+            }
+            if (!pt.isDefined("product")) {
+                org.example.model.adt.Procedure prodProc = new org.example.model.adt.Procedure(java.util.Arrays.asList("a","b"),
+                        new org.example.model.stmt.CompStmt(new org.example.model.stmt.VarDeclStmt("v", new org.example.model.type.IntType()),
+                                new org.example.model.stmt.CompStmt(new org.example.model.stmt.AssignStmt("v", new org.example.model.exp.ArithExp(3, new org.example.model.exp.VarExp("a"), new org.example.model.exp.VarExp("b"))), new org.example.model.stmt.PrintStmt(new org.example.model.exp.VarExp("v")))));
+                pt.add("product", prodProc);
+            }
+        } catch (Exception ignored) {}
+         // for GUI purposes, we could register example procedures here if needed
+         PrgState prg = new PrgState(stk, sym, out, ft, heap, pt, selected);
+         repo = new Repository(prg, "log.txt");
+         controller = new Controller(repo);
     }
 
     private void updateAll() {
@@ -251,10 +281,21 @@ public class GUIController {
         if (!opt.isPresent()) return;
         PrgState p = opt.get();
 
-        // sym table
+        // sym table: snapshot to string pairs
         Map<String, Value> sym = p.getSymTable().getContent();
-        ObservableList<Map.Entry<String, Value>> symEntries = FXCollections.observableArrayList(sym.entrySet());
+        java.util.List<javafx.util.Pair<String, String>> symPairs = sym.entrySet().stream()
+                .map(e -> new javafx.util.Pair<>(e.getKey(), String.valueOf(e.getValue())))
+                .collect(java.util.stream.Collectors.toList());
+        ObservableList<javafx.util.Pair<String, String>> symEntries = FXCollections.observableArrayList(symPairs);
         symTableView.setItems(symEntries);
+
+        // proc table: show procedures from the shared proc table (use first program's proc table)
+        Map<String, org.example.model.adt.Procedure> procMap = p.getProcTable().getContent();
+        java.util.List<javafx.util.Pair<String, String>> procPairs = procMap.entrySet().stream()
+                .map(e -> new javafx.util.Pair<>(e.getKey() + e.getValue().getParams().toString(), e.getValue().getBody().toString()))
+                .collect(java.util.stream.Collectors.toList());
+        ObservableList<javafx.util.Pair<String, String>> procEntries = FXCollections.observableArrayList(procPairs);
+        procTableView.setItems(procEntries);
 
         // exe stack: we want top element first
         List<String> elems = Arrays.stream(p.getStk().toFileString().split("\n"))

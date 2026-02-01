@@ -112,4 +112,35 @@ public class ExampleCreator {
                                         new CompStmt(forkStmt, after)))));
     }
 
+    // Procedures example for Problem 1
+    // procedure sum(a,b) v=a+b;print(v)
+    // procedure product(a,b) v=a*b;print(v)
+    // main: v=2;w=5;call sum(v*10,w);print(v); fork(call product(v,w); fork(call sum(v,w)))
+    public static IStmt getProceduresExample() {
+        IStmt sumBody = new CompStmt(new AssignStmt("v", new ArithExp(1, new VarExp("a"), new VarExp("b"))), new PrintStmt(new VarExp("v")));
+        IStmt prodBody = new CompStmt(new AssignStmt("v", new ArithExp(3, new VarExp("a"), new VarExp("b"))), new PrintStmt(new VarExp("v")));
+
+        // main program
+        IStmt main = new CompStmt(new VarDeclStmt("v", new IntType()),
+                new CompStmt(new VarDeclStmt("w", new IntType()),
+                        new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(2))),
+                                new CompStmt(new AssignStmt("w", new ValueExp(new IntValue(5))),
+                                        new CompStmt(new CallStmt("sum", java.util.Arrays.asList(new ArithExp(3, new VarExp("v"), new ValueExp(new IntValue(10))), new VarExp("w"))),
+                                                new CompStmt(new PrintStmt(new VarExp("v")), new ForkStmt(new CompStmt(new CallStmt("product", java.util.Arrays.asList(new VarExp("v"), new VarExp("w"))), new ForkStmt(new CallStmt("sum", java.util.Arrays.asList(new VarExp("v"), new VarExp("w"))))))))))));
+        // We will register procedures into ProcTable in the interpreter before running this example
+        // To represent the program as a single IStmt, we return main
+        return main;
+    }
+
+    // Sleep example for Problem 2
+    // v=10; (fork(v=v-1;v=v-1;print(v)); sleep(10); print(v*10)
+    public static IStmt getSleepExample() {
+        IStmt forkBody = new CompStmt(new AssignStmt("v", new ArithExp(2, new VarExp("v"), new ValueExp(new IntValue(1)))),
+                new CompStmt(new AssignStmt("v", new ArithExp(2, new VarExp("v"), new ValueExp(new IntValue(1)))), new PrintStmt(new VarExp("v"))));
+        IStmt main = new CompStmt(new VarDeclStmt("v", new IntType()),
+                new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(10))),
+                        new CompStmt(new ForkStmt(forkBody), new CompStmt(new SleepStmt(10), new PrintStmt(new ArithExp(3, new VarExp("v"), new ValueExp(new IntValue(10))))))));
+        return main;
+    }
+
 }

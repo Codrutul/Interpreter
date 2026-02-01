@@ -2,12 +2,7 @@ package org.example.model.stmt;
 
 import org.example.exception.MyException;
 import org.example.model.PrgState;
-import org.example.model.adt.MyIStack;
-import org.example.model.adt.MyStack;
-import org.example.model.adt.MyIDictionary;
-import org.example.model.adt.MyIList;
-import org.example.model.adt.MyIFileTable;
-import org.example.model.adt.MyIHeap;
+import org.example.model.adt.*;
 import org.example.model.type.Type;
 import org.example.model.value.Value;
 
@@ -27,16 +22,27 @@ public class ForkStmt implements IStmt {
     public PrgState execute(PrgState state) throws MyException {
         MyIStack<IStmt> newStack = new MyStack<>();
 
-        // clone the symbol table
-        MyIDictionary<String, Value> newSymTable = state.getSymTable().deepCopy();
+        // clone the entire stack of symbol tables
+        java.util.Stack<MyIDictionary<String, Value>> oldStack = state.getSymTableStack();
+        MyIStack<MyIDictionary<String, Value>> tmpStack = new MyStack<>();
+        // copy elements to tmp to preserve order
+        for (MyIDictionary<String, Value> dict : oldStack) {
+            tmpStack.push(dict.deepCopy());
+        }
+        // create a new stack (java.util.Stack) for the child
+        java.util.Stack<MyIDictionary<String, Value>> newSymStack = new java.util.Stack<>();
+        while (!tmpStack.isEmpty()) {
+            newSymStack.push(tmpStack.pop());
+        }
 
         // shared structures
-        MyIList<Value> out = state.getOut();
-        MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
-        MyIHeap<Integer, Value> heap = state.getHeap();
+         MyIList<Value> out = state.getOut();
+         MyIFileTable<String, BufferedReader> fileTable = state.getFileTable();
+         MyIHeap<Integer, Value> heap = state.getHeap();
+         MyIProcTable procTable = state.getProcTable();
 
-        // create new PrgState (child thread)
-        return new PrgState(newStack, newSymTable, out, fileTable, heap, forkedStmt.deepCopy());
+        // create new PrgState (child thread) using the copied stack
+        return new PrgState(newStack, newSymStack, out, fileTable, heap, procTable, forkedStmt.deepCopy());
     }
 
     @Override
