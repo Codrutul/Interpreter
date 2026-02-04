@@ -1,13 +1,7 @@
 package org.example.model;
 
 import org.example.exception.MyException;
-import org.example.model.adt.MyIFileTable;
-import org.example.model.adt.MyIDictionary;
-import org.example.model.adt.MyIList;
-import org.example.model.adt.MyIStack;
-import org.example.model.adt.MyIHeap;
-import org.example.model.adt.MyISemaphore;
-import org.example.model.adt.MySemaphore;
+import org.example.model.adt.*;
 import org.example.model.stmt.IStmt;
 import org.example.model.value.Value;
 
@@ -21,7 +15,7 @@ public class PrgState {
     private MyIHeap<Integer, Value> heap;
     private IStmt originalProgram; //optional field, but good to have
 
-    private MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> semaphoreTable;
+    private MyISemaphore<Integer, SemaphoreEntry> semaphoreTable;
 
     private final int id;
     private static int lastId = 0;
@@ -35,8 +29,7 @@ public class PrgState {
         this(stk, symtbl, ot, fileTable, heap, prg, new MySemaphore());
     }
 
-    // new constructor that allows sharing the semaphore table (used by Fork)
-    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg, MyISemaphore<Integer, org.example.model.adt.SemaphoreEntry> sem) {
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, Value> symtbl, MyIList<Value> ot, MyIFileTable<String, BufferedReader> fileTable, MyIHeap<Integer, Value> heap, IStmt prg, MyISemaphore<Integer, SemaphoreEntry> sem) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;

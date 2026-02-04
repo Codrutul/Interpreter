@@ -17,10 +17,14 @@ import java.util.Optional;
 public class AcquireStmt implements IStmt {
     private final String var;
 
-    public AcquireStmt(String var) { this.var = var; }
+    public AcquireStmt(String var) {
+        this.var = var;
+    }
 
     @Override
-    public String toString() { return "acquire(" + var + ")"; }
+    public String toString() {
+        return "acquire(" + var + ")";
+    }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
@@ -38,20 +42,20 @@ public class AcquireStmt implements IStmt {
         int id = state.getId();
         if (N1 > NL) {
             if (!list.contains(id)) {
-                // add id
                 List<Integer> newList = new ArrayList<>(list);
                 newList.add(id);
                 sem.update(foundIndex, new SemaphoreEntry(N1, newList));
             }
         } else {
-            // push back acquire
             state.getStk().push(this.deepCopy());
         }
         return null;
     }
 
     @Override
-    public IStmt deepCopy() { return new AcquireStmt(var); }
+    public IStmt deepCopy() {
+        return new AcquireStmt(var);
+    }
 
     @Override
     public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {

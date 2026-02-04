@@ -75,8 +75,8 @@ public class ExampleCreator {
         return new CompStmt(
                 new VarDeclStmt("v", new RefType(new IntType())),
                 new CompStmt(new NewStmt("v", new ValueExp(new IntValue(20))), new CompStmt(
-                                new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(new NewStmt("a", new VarExp("v")), new CompStmt(new NewStmt("v", new ValueExp(new IntValue(30))),
-                                                new PrintStmt(new ReadHeapExp(new ReadHeapExp(new VarExp("a")))))))));
+                        new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(new NewStmt("a", new VarExp("v")), new CompStmt(new NewStmt("v", new ValueExp(new IntValue(30))),
+                        new PrintStmt(new ReadHeapExp(new ReadHeapExp(new VarExp("a")))))))));
     }
 
     // Example 8:
@@ -121,11 +121,11 @@ public class ExampleCreator {
         IStmt assigns = new CompStmt(new AssignStmt("a", new ValueExp(new IntValue(1))),
                 new CompStmt(new AssignStmt("b", new ValueExp(new IntValue(2))), new AssignStmt("c", new ValueExp(new IntValue(5)))));
 
-        // switch(a*10) cases
-        org.example.model.exp.Exp exp = new ArithExp(3, new VarExp("a"), new ValueExp(new IntValue(10))); // a*10
-        org.example.model.exp.Exp case1 = new ArithExp(3, new VarExp("b"), new VarExp("c")); // b*c
+        // switch cases
+        Exp exp = new ArithExp(3, new VarExp("a"), new ValueExp(new IntValue(10))); // a*10
+        Exp case1 = new ArithExp(3, new VarExp("b"), new VarExp("c")); // b*c
         IStmt stmt1 = new CompStmt(new PrintStmt(new VarExp("a")), new PrintStmt(new VarExp("b")));
-        org.example.model.exp.Exp case2 = new ValueExp(new IntValue(10));
+        Exp case2 = new ValueExp(new IntValue(10));
         IStmt stmt2 = new CompStmt(new PrintStmt(new ValueExp(new IntValue(100))), new PrintStmt(new ValueExp(new IntValue(200))));
         IStmt defaultS = new PrintStmt(new ValueExp(new IntValue(300)));
 

@@ -17,10 +17,14 @@ import java.util.Optional;
 public class ReleaseStmt implements IStmt {
     private final String var;
 
-    public ReleaseStmt(String var) { this.var = var; }
+    public ReleaseStmt(String var) {
+        this.var = var;
+    }
 
     @Override
-    public String toString() { return "release(" + var + ")"; }
+    public String toString() {
+        return "release(" + var + ")";
+    }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
@@ -43,7 +47,9 @@ public class ReleaseStmt implements IStmt {
     }
 
     @Override
-    public IStmt deepCopy() { return new ReleaseStmt(var); }
+    public IStmt deepCopy() {
+        return new ReleaseStmt(var);
+    }
 
     @Override
     public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {

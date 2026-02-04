@@ -3,6 +3,7 @@ package org.example.model.stmt;
 import org.example.exception.MyException;
 import org.example.model.PrgState;
 import org.example.model.adt.MyIDictionary;
+import org.example.model.exp.EqualExp;
 import org.example.model.exp.Exp;
 import org.example.model.type.Type;
 
@@ -30,9 +31,8 @@ public class SwitchStmt implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
-        // transform into nested ifs: if(exp==exp1) then stmt1 else (if (exp==exp2) then stmt2 else defaultStmt)
-        Exp cond1 = new org.example.model.exp.EqualExp(exp.deepCopy(), exp1.deepCopy());
-        Exp cond2 = new org.example.model.exp.EqualExp(exp.deepCopy(), exp2.deepCopy());
+        Exp cond1 = new EqualExp(exp.deepCopy(), exp1.deepCopy());
+        Exp cond2 = new EqualExp(exp.deepCopy(), exp2.deepCopy());
         IStmt nestedIf = new IfStmt(cond2, stmt2.deepCopy(), defaultStmt.deepCopy());
         IStmt outerIf = new IfStmt(cond1, stmt1.deepCopy(), nestedIf);
         state.getStk().push(outerIf);

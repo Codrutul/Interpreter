@@ -12,6 +12,8 @@ import org.example.model.type.Type;
 import org.example.model.value.IntValue;
 import org.example.model.value.Value;
 
+import static java.util.Collections.emptyList;
+
 public class CreateSemaphoreStmt implements IStmt {
     private final String var;
     private final Exp expr;
@@ -22,7 +24,9 @@ public class CreateSemaphoreStmt implements IStmt {
     }
 
     @Override
-    public String toString() { return "createSemaphore(" + var + "," + expr + ")"; }
+    public String toString() {
+        return "createSemaphore(" + var + "," + expr + ")";
+    }
 
     @Override
     public PrgState execute(PrgState state) throws MyException {
@@ -31,17 +35,21 @@ public class CreateSemaphoreStmt implements IStmt {
         int number = ((IntValue) val).getVal();
         MyISemaphore<Integer, SemaphoreEntry> sem = state.getSemaphoreTable();
         // add new semaphore entry
-        int addr = sem.add(new SemaphoreEntry(number, java.util.Collections.emptyList()));
+        int addr = sem.add(new SemaphoreEntry(number, emptyList()));
         // assign addr to var
-        if (!state.getSymTable().isDefined(var)) throw new MyException("createSemaphore: variable " + var + " is not defined");
+        if (!state.getSymTable().isDefined(var))
+            throw new MyException("createSemaphore: variable " + var + " is not defined");
         Value varVal = state.getSymTable().lookup(var);
-        if (!(varVal.getType() instanceof IntType)) throw new MyException("createSemaphore: variable " + var + " is not of type int");
+        if (!(varVal.getType() instanceof IntType))
+            throw new MyException("createSemaphore: variable " + var + " is not of type int");
         state.getSymTable().update(var, new IntValue(addr));
         return null;
     }
 
     @Override
-    public IStmt deepCopy() { return new CreateSemaphoreStmt(var, expr.deepCopy()); }
+    public IStmt deepCopy() {
+        return new CreateSemaphoreStmt(var, expr.deepCopy());
+    }
 
     @Override
     public MyIDictionary<String, Type> typecheck(MyIDictionary<String, Type> typeEnv) throws MyException {
